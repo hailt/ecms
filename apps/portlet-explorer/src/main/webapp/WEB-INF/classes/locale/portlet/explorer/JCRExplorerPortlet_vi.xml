@@ -182,6 +182,7 @@
       <sortBy>Xắp xếp theo</sortBy>
       <order>Thứ tự</order>
       <nodesPerPage>Số node trên một trang</nodesPerPage>
+      <editInNewWindow>Chỉnh sửa văn bản ở cửa sổ mới</editInNewWindow>      
     </label>
     <action>
       <Back>Quay lại</Back>

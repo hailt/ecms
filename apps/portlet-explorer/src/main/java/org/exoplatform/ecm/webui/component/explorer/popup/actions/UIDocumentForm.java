@@ -32,7 +32,9 @@ import javax.jcr.Value;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
+import org.exoplatform.ecm.webui.component.explorer.UIDocumentWorkspace;
 import org.exoplatform.ecm.webui.component.explorer.UIJCRExplorer;
+import org.exoplatform.ecm.webui.component.explorer.UIWorkingArea;
 import org.exoplatform.ecm.webui.form.DialogFormActionListeners;
 import org.exoplatform.ecm.webui.form.UIDialogForm;
 import org.exoplatform.ecm.webui.selector.ComponentSelector;
@@ -401,6 +403,10 @@ public class UIDocumentForm extends UIDialogForm implements UIPopupComponent, UI
          documentForm.releaseLock();
       }
       event.getRequestContext().setAttribute("nodePath",newNode.getPath());
+      UIWorkingArea uiWorkingArea = uiExplorer.getChild(UIWorkingArea.class);
+      UIDocumentWorkspace uiDocumentWorkspace = uiWorkingArea.getChild(UIDocumentWorkspace.class);
+      uiDocumentWorkspace.removeChild(UIDocumentFormController.class);
+      uiExplorer.setCurrentPath(uiExplorer.getPathBeforeEditing());
       uiExplorer.refreshExplorer();
       uiExplorer.updateAjax(event);      
     }
@@ -490,6 +496,14 @@ public class UIDocumentForm extends UIDialogForm implements UIPopupComponent, UI
   static  public class CancelActionListener extends EventListener<UIDocumentForm> {
     public void execute(Event<UIDocumentForm> event) throws Exception {
       UIJCRExplorer uiExplorer = event.getSource().getAncestorOfType(UIJCRExplorer.class);
+      UIWorkingArea uiWorkingArea = uiExplorer.getChild(UIWorkingArea.class);
+      UIDocumentWorkspace uiDocumentWorkspace = uiWorkingArea.getChild(UIDocumentWorkspace.class);
+      uiExplorer.setCurrentPath(uiExplorer.getPathBeforeEditing());
+      if (uiDocumentWorkspace.getChild(UIDocumentFormController.class) != null) {
+        event.getSource().releaseLock();
+        uiDocumentWorkspace.removeChild(UIDocumentFormController.class);
+        uiExplorer.updateAjax(event);
+      } else    
       uiExplorer.cancelAction();
     }
   }

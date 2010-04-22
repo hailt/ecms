@@ -52,6 +52,7 @@ import org.exoplatform.ecm.webui.comparator.StringComparator;
 import org.exoplatform.ecm.webui.component.explorer.control.UIActionBar;
 import org.exoplatform.ecm.webui.component.explorer.control.UIAddressBar;
 import org.exoplatform.ecm.webui.component.explorer.control.UIControl;
+import org.exoplatform.ecm.webui.component.explorer.popup.actions.UIDocumentFormController;
 import org.exoplatform.ecm.webui.component.explorer.sidebar.UITreeExplorer;
 import org.exoplatform.ecm.webui.utils.JCRExceptionManager;
 import org.exoplatform.ecm.webui.utils.LockUtil;
@@ -118,6 +119,7 @@ public class UIJCRExplorer extends UIContainer {
   private String language_ ;
   private String tagPath_ ;
   private String referenceWorkspace_ ;
+  private String pathBeforeEditing;
   
   private boolean isViewTag_;
   private boolean isHidePopup_;
@@ -177,6 +179,8 @@ public class UIJCRExplorer extends UIContainer {
     setCurrentRootPath(rootPath);
   }
   
+  public String getPathBeforeEditing() { return pathBeforeEditing; }
+  public void setPathBeforeEditing(String value) { pathBeforeEditing = value; }
   private void setCurrentRootPath(String rootPath) {
     currentRootPath_ = rootPath ;
   }
@@ -558,17 +562,20 @@ public class UIJCRExplorer extends UIContainer {
     }
     UIDocumentWorkspace uiDocWorkspace = uiWorkingArea.getChild(UIDocumentWorkspace.class);
     if(uiDocWorkspace.isRendered()) {
-      UIDocumentContainer uiDocumentContainer = uiDocWorkspace.getChild(UIDocumentContainer.class) ;
-      if(isShowViewFile()) {
-        UIDocumentWithTree uiDocumentWithTree = uiDocumentContainer.getChildById("UIDocumentWithTree");
-        uiDocumentWithTree.updatePageListData();
-        uiDocumentContainer.setRenderedChild("UIDocumentWithTree");
-      } else {
-        UIDocumentInfo uiDocumentInfo = uiDocumentContainer.getChildById("UIDocumentInfo") ;
-        uiDocumentInfo.updatePageListData();
-        uiDocumentContainer.setRenderedChild("UIDocumentInfo") ;
+      if (uiDocWorkspace.getChild(UIDocumentFormController.class) == null || 
+          !uiDocWorkspace.getChild(UIDocumentFormController.class).isRendered()) {
+        UIDocumentContainer uiDocumentContainer = uiDocWorkspace.getChild(UIDocumentContainer.class) ;
+        if(isShowViewFile()) {
+          UIDocumentWithTree uiDocumentWithTree = uiDocumentContainer.getChildById("UIDocumentWithTree");
+          uiDocumentWithTree.updatePageListData();
+          uiDocumentContainer.setRenderedChild("UIDocumentWithTree");
+        } else {
+          UIDocumentInfo uiDocumentInfo = uiDocumentContainer.getChildById("UIDocumentInfo") ;
+          uiDocumentInfo.updatePageListData();
+          uiDocumentContainer.setRenderedChild("UIDocumentInfo") ;
+        }
+        uiDocWorkspace.setRenderedChild(UIDocumentContainer.class);
       }
-      uiDocWorkspace.setRenderedChild(UIDocumentContainer.class) ;
     }
     event.getRequestContext().addUIComponentToUpdateByAjax(uiWorkingArea);
     event.getRequestContext().addUIComponentToUpdateByAjax(uiActionBar);

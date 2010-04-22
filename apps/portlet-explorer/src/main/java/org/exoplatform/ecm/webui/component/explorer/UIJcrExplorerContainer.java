@@ -181,6 +181,7 @@ public class UIJcrExplorerContainer extends UIContainer {
       if (pref == null) {
         pref = new Preference();
         pref.setNodesPerPage(Integer.parseInt(portletPref.getValue(Preference.NODES_PER_PAGE, "10")));
+        pref.setEditInNewWindow(Boolean.parseBoolean(portletPref.getValue(Preference.EDIT_IN_NEW_WINDOW, "false")));
         uiExplorer.setPreferences(pref);
       }
     }

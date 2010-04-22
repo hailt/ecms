@@ -177,7 +177,8 @@
       <enableDragAndDrop>Enable drag &amp; drop</enableDragAndDrop>
       <sortBy>Sort by</sortBy>
       <order>Order</order>
-      <nodesPerPage>Nodes Per Page</nodesPerPage>
+      <nodesPerPage>Nodes per page</nodesPerPage>
+      <editInNewWindow>Edit in new window</editInNewWindow>      
     </label>
     <action>
       <Back>#{word.back}</Back>

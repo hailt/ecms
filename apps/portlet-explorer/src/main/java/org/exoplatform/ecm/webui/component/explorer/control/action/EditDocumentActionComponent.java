@@ -30,6 +30,10 @@ import javax.jcr.lock.Lock;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.ecm.webui.component.explorer.UIDocumentContainer;
+import org.exoplatform.ecm.webui.component.explorer.UIDocumentInfo;
+import org.exoplatform.ecm.webui.component.explorer.UIDocumentWorkspace;
+import org.exoplatform.ecm.webui.component.explorer.UIDrivesArea;
 import org.exoplatform.ecm.webui.component.explorer.UIJCRExplorer;
 import org.exoplatform.ecm.webui.component.explorer.UIWorkingArea;
 import org.exoplatform.ecm.webui.component.explorer.control.filter.CanSetPropertyFilter;
@@ -44,6 +48,7 @@ import org.exoplatform.ecm.webui.component.explorer.popup.actions.UIDocumentForm
 import org.exoplatform.ecm.webui.component.explorer.popup.admin.UIActionContainer;
 import org.exoplatform.ecm.webui.component.explorer.popup.admin.UIActionForm;
 import org.exoplatform.ecm.webui.component.explorer.popup.admin.UIActionTypeForm;
+import org.exoplatform.ecm.webui.component.explorer.sidebar.UITreeExplorer;
 import org.exoplatform.ecm.webui.utils.JCRExceptionManager;
 import org.exoplatform.ecm.webui.utils.LockUtil;
 import org.exoplatform.ecm.webui.utils.Utils;
@@ -86,7 +91,7 @@ public class EditDocumentActionComponent extends UIAbstractManagerComponent {
   }
   
   private static void refresh(Node node) throws Exception {
-  	node.refresh(true);
+    node.refresh(true);
   }
 
   public static void editDocument(Event<? extends UIComponent> event,
@@ -117,7 +122,6 @@ public class EditDocumentActionComponent extends UIAbstractManagerComponent {
       }else {
         nodeType = selectedNode.getPrimaryNodeType().getName();
       }        
-      UIPopupContainer UIPopupContainer = uiExplorer.getChild(UIPopupContainer.class);
       UIDocumentFormController uiController = 
         event.getSource().createUIComponent(UIDocumentFormController.class, null, "EditFormController");
       UIDocumentForm uiDocumentForm = uiController.getChild(UIDocumentForm.class);
@@ -176,8 +180,29 @@ public class EditDocumentActionComponent extends UIAbstractManagerComponent {
       uiDocumentForm.setWorkspace(selectedNode.getSession().getWorkspace().getName());
       uiDocumentForm.setStoredPath(selectedNode.getPath());
       uiController.setRenderedChild(UIDocumentForm.class);
-      UIPopupContainer.activate(uiController, 800, 600);          
-      event.getRequestContext().addUIComponentToUpdateByAjax(UIPopupContainer);
+      if (uiExplorer.getPreference().isEditInNewWindow()) {
+        UIPopupContainer uiPopupContainer = uiExplorer.getChild(UIPopupContainer.class);      
+        uiPopupContainer.activate(uiController, 800, 600);          
+        event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
+      } else {
+        UIWorkingArea uiWorkingArea = uiExplorer.getChild(UIWorkingArea.class);
+        UIDocumentWorkspace uiDocumentWorkspace = uiWorkingArea.getChild(UIDocumentWorkspace.class);
+        if(!uiDocumentWorkspace.isRendered()) {
+          uiWorkingArea.getChild(UIDrivesArea.class).setRendered(false);
+          uiWorkingArea.getChild(UIDocumentWorkspace.class).setRendered(true);
+        }
+        UIDocumentContainer uiDocumentContainer = uiDocumentWorkspace.getChild(UIDocumentContainer.class);
+        uiDocumentContainer.setRendered(false);
+        UIDocumentFormController controller = uiDocumentWorkspace.removeChild(UIDocumentFormController.class);
+        if (controller != null) {
+          controller.getChild(UIDocumentForm.class).releaseLock();
+        }
+        uiDocumentWorkspace.addChild(uiController);
+        uiController.setRendered(true);
+        uiExplorer.updateAjax(event);
+//        UIDocumentInfo uiDocumentInfo = uiDocumentContainer.getChildById("UIDocumentInfo");
+               
+      }
       return;
     }
   }
@@ -200,6 +225,7 @@ public class EditDocumentActionComponent extends UIAbstractManagerComponent {
         Session session = uiExplorer.getSessionByWorkspace(wsName);
         UIApplication uiApp = uicomp.getAncestorOfType(UIApplication.class);
         try {
+          uiExplorer.setPathBeforeEditing(uiExplorer.getCurrentPath());
           // Use the method getNodeByPath because it is link aware
           if (!uiExplorer.getCurrentPath().equals(nodePath)) {
             uiExplorer.setCurrentPath(nodePath);
