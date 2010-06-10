@@ -32,6 +32,12 @@
 		    				<tr>
 			    		  		<th class="THBar"> Name </th>
 			    	 		</tr>
+			    	 		<tr>
+			    		  		<th class="THBar"> Create Date </th>
+			    	 		</tr>
+			    	 		<tr>
+			    		  		<th class="THBar"> Size </th>
+			    	 		</tr>
 				    	</thead>
 			    		<tr>
 				    		<td class="Item TRNoContent">There is no content</td>

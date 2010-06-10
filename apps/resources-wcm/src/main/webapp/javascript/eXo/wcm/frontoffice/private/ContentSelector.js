@@ -3,6 +3,7 @@ function EcmContentSelector() {
 	this.context = eXo.env.portal.context;
 	this.accessMode = eXo.env.portal.accessMode;
 	this.userLanguage = eXo.env.portal.language;
+	this.userId = eXo.env.portal.userName;
 	var parentLocation = window.parent.location;
 	this.hostName = parentLocation.href.substring(0, parentLocation.href.indexOf(parentLocation.pathname));
 	this.repositoryName = "repository";
@@ -17,6 +18,8 @@ function EcmContentSelector() {
 	this.xmlHttpRequest = false;
 	this.driverName = "";
 	this.eventNode = false;
+	this.uploadFile = "uploadFile/upload";
+	this.controlUpload = "uploadFile/control";
 }
 
 EcmContentSelector.prototype.getUrlParam = function(paramName) {
@@ -56,7 +59,7 @@ EcmContentSelector.prototype.ajaxRequest = function(url) {
       	} catch(e) {
         	eXo.ecm.ECS.xmlHttpRequest = false;
       	}
-	}
+		}
   }
 	if(eXo.ecm.ECS.xmlHttpRequest) {
 		eXo.ecm.ECS.xmlHttpRequest.onreadystatechange = eXo.ecm.ECS.processResponse;
@@ -89,8 +92,8 @@ EcmContentSelector.prototype.initRequestXmlTree = function(typeObj){
 		case "one" : 
 			eXo.ecm.ECS.typeObj = "one";
 			break;
-		case "fck" :
-			eXo.ecm.ECS.typeObj = "fck";
+		case "editor" :
+			eXo.ecm.ECS.typeObj = "editor";
 			break;
 		default :
 			eXo.ecm.ECS.typeObj = false;
@@ -98,9 +101,10 @@ EcmContentSelector.prototype.initRequestXmlTree = function(typeObj){
 	}
 	eXo.ecm.ECS.isShowFilter();
 	var ECS = eXo.ecm.ECS;
-	var command = ECS.cmdEcmDriver+ECS.cmdGetDriver + "lang=" + ECS.userLanguage;
+	var command = ECS.cmdEcmDriver+ECS.cmdGetDriver + "lang=" + eXo.ecm.ECS.userLanguage;
 	var url = ECS.hostName+ECS.connector+ command ;
 	eXo.ecm.ECS.ajaxRequest(url);
+		
 };
 
 EcmContentSelector.prototype.buildECSTreeView = function() {
@@ -110,9 +114,10 @@ EcmContentSelector.prototype.buildECSTreeView = function() {
 	for(var i = 0 ; i < nodeList.length; i++)	 {
 		var strName = nodeList[i].getAttribute("name") ;
 		var id = eXo.ecm.ECS.generateIdDriver(nodeList[i]);
+		var isUpload = nodeList[i].getAttribute("isUpload");
 		treeHTML += '<div class="Node" onclick="eXo.ecm.ECS.actionColExp(this);">';
 		treeHTML += 	'<div class="ExpandIcon">';		
-		treeHTML += 		'<a title="'+strName+'"href="javascript:void(0);" class="NodeIcon DefaultPageIcon" onclick="eXo.ecm.ECS.renderBreadcrumbs(this);eXo.ecm.ECS.listRootFolder(this);" name="'+strName+'" id="'+id+'">';
+		treeHTML += 		'<a title="'+strName+'"href="javascript:void(0);" class="NodeIcon DefaultPageIcon" onclick="eXo.ecm.ECS.renderBreadcrumbs(this);eXo.ecm.ECS.listRootFolder(this);" name="'+strName+'" id="'+id+'" isUpload="'+isUpload+'">';
 		treeHTML +=			strName;	
 		treeHTML +=			'</a>';
 		treeHTML += 	'</div>';			
@@ -157,6 +162,12 @@ EcmContentSelector.prototype.getDir = function(currentNode, event) {
 				currentFolder = currentNode.getAttribute('name');
 				currentNode.setAttribute("currentFolder", currentFolder);
 			}
+
+			if(nodeLink.getAttribute('isUpload')) {
+				eXo.ecm.ECS.showUpload();
+			} else {
+				eXo.ecm.ECS.hideUpload();
+			}
 	}
 	eXo.ecm.ECS.currentFolder = currentFolder;
 	eXo.ecm.ECS.currentNode = currentNode;
@@ -187,13 +198,13 @@ EcmContentSelector.prototype.renderSubTree = function(currentNode) {
 			var driverPath = nodeList[i].getAttribute("driverPath");
 			var repository =  nodeList[i].getAttribute("repository");
 			var workspace =  nodeList[i].getAttribute("workspace");
+			var isUpload = nodeList[i].getAttribute("isUpload");
 			var label = nodeList[i].getAttribute("label");
 			if (!label) label = strName;
 			treeHTML += '<div class="Node" onclick="eXo.ecm.ECS.actionColExp(this);">';
 			treeHTML += 	'<div class="ExpandIcon">';
-			treeHTML +=			'<a title="'+label+'" href="javascript:void(0);" class="NodeIcon DefaultPageIcon" onclick="eXo.ecm.ECS.getDir(this, event);" name="'+strName+'" id="'+id+'"  driverPath="'+driverPath+'" repository="'+repository+'" workspace="'+workspace+'">';
-			treeHTML +=				label;	
-			treeHTML += 		'</a>';
+			treeHTML +=			'<a title="'+strName+'" href="javascript:void(0);" class="NodeIcon DefaultPageIcon" onclick="eXo.ecm.ECS.getDir(this, event);" name="'+strName+'" id="'+id+'"  driverPath="'+driverPath+'" repository="'+repository+'" workspace="'+workspace+'" isUpload="'+isUpload+'">';
+			treeHTML +=				strName;	
 			treeHTML +=		'</div>';
 			treeHTML +=	'</div>';
 		}
@@ -203,6 +214,7 @@ EcmContentSelector.prototype.renderSubTree = function(currentNode) {
 };
 
 EcmContentSelector.prototype.listRootFolder = function(rootNode) {
+	if(eXo.ecm.ECS.typeObj != 'folder') return;
 	if(typeof(rootNode) == 'string') rootNode = document.getElementById(rootNode);
 	var nodeName = rootNode.getAttribute("name");
 	var nodeOnBreadcrumb = document.getElementById(rootNode.getAttribute("id"));
@@ -234,9 +246,10 @@ EcmContentSelector.prototype.renderSubTrees = function(currentNode, event, conne
 		for(var i = 0; i < nodeList.length; i++) {
 			var id = eXo.ecm.ECS.generateIdNodes(nodeList[i], currentNode.id);
 			var strName = nodeList[i].getAttribute("name");
+			var isUpload = nodeList[i].getAttribute("isUpload");
 			treeHTML += '<div class="Node" onclick="eXo.ecm.ECS.actionColExp(this);">';
 			treeHTML += 	'<div class="ExpandIcon">';
-			treeHTML +=			'<a title="'+ strName +'" class="NodeIcon DefaultPageIcon" href="javascript:void(0);" onclick="eXo.ecm.ECS.getDir(this, event);" name="'+strName+'" id="'+id+'">';
+			treeHTML +=			'<a title="'+ strName +'" class="NodeIcon DefaultPageIcon" href="javascript:void(0);" onclick="eXo.ecm.ECS.getDir(this, event);" name="'+strName+'" id="'+id+'" isUpload="'+isUpload+'">';
 			treeHTML +=				strName;	
 			treeHTML += 		'</a>';
 			treeHTML +=		'</div>';
@@ -252,9 +265,10 @@ EcmContentSelector.prototype.renderSubTrees = function(currentNode, event, conne
 			for(var i = 0; i < currentNodeList.length; i++) {
 				var id = eXo.ecm.ECS.generateIdNodes(currentNodeList[i], currentNode.id);
 				var	strName	= currentNodeList[i].getAttribute("name");
+				var isUpload = currentNodeList[i].getAttribute("isUpload");
 				treeHTML += '<div class="Node" onclick="eXo.ecm.ECS.actionColExp(this);">';
 				treeHTML += 	'<div class="ExpandIcon">';
-				treeHTML +=			'<a title="'+strName+'" class="NodeIcon DefaultPageIcon" href="javascript:void(0);" onclick="eXo.ecm.ECS.getDir(this, event);" name="'+strName+'" id="'+id+'">';
+				treeHTML +=			'<a title="'+strName+'" class="NodeIcon DefaultPageIcon" href="javascript:void(0);" onclick="eXo.ecm.ECS.getDir(this, event);" name="'+strName+'" id="'+id+'" isUpload="'+isUpload+'">';
 				treeHTML +=				strName;	
 				treeHTML += 		'</a>';
 				treeHTML +=		'</div>';
@@ -419,6 +433,8 @@ EcmContentSelector.prototype.listFiles = function(list) {
 		var newRow = tblRWS.insertRow(i+1);
 		newRow.className = clazz;		
 		newRow.insertCell(0).innerHTML = '<a class="Item '+clazzItem+'" url="'+url+'" path="'+path+'" nodeType="'+nodeType+'" onclick="eXo.ecm.ECS.insertContent(this);">'+node+'</a>';
+		newRow.insertCell(1).innerHTML = '<div class="Item">'+ list[i].getAttribute("dateCreated") +'</div>';
+		newRow.insertCell(2).innerHTML = '<div class="Item">'+ list[i].getAttribute("size")+'&nbsp;kb' +'</div>';
 		
 		if(i > 13) {
 			var numberRecords = 0;
@@ -647,25 +663,25 @@ EcmContentSelector.prototype.insertContent = function(objNode) {
 		action = action.substring(0, action.length - 2);
 		action += '&objectId=' + eXo.ecm.ECS.repositoryName + ":" + eXo.ecm.ECS.workspaceName + ":" + objNode.getAttribute("path") + '\')';
 		eval(action);
-	} else if(eXo.ecm.ECS.typeObj == "fck") {
-		if(!objContent) return;
-		var hostName = eXoPlugin.hostName;
-		var nodeType = objContent.getAttribute('nodeType');
-		var url 	= objContent.getAttribute('url');
-		var name 	= objContent.innerHTML;
+	} else {
+		var hostName = eXo.ecm.ECS.hostName;
+		var nodeType = objNode.getAttribute('nodeType');
+		var url 	= objNode.getAttribute('url');
+		var name 	= objNode.innerHTML;
 		var strHTML = '';	
-		if(window.opener.document.getElementById(getParameterValueByName("browserType"))){		
+		if(window.opener.document.getElementById(eXp.getParameterValueByName("browserType"))){		
 			strHTML += url;		
-			window.opener.document.getElementById(getParameterValueByName("browserType")).value=strHTML;
+			window.opener.document.getElementById(eXp.getParameterValueByName("browserType")).value=strHTML;
 		} else {
 			if(nodeType.indexOf("image") >=0) {
 				strHTML += "<img src='"+url+"' name='"+name+"' alt='"+name+"'/>";
 			} else {
 				strHTML += "<a href='" + url+"' style='text-decoration:none;'>"+name+"</a>";		
 			}
-			FCK.InsertHtml(strHTML);
-		}			
-		FCK.OnAfterSetHTML = window.close();
+			CKEDITOR.ContentSelector.insertHtml(strHTML);
+		}
+		window.close();			
+		CKEDITOR.ContentSelector.OnAfterSetHTML = window.close();
 	}
 };
 
@@ -771,6 +787,7 @@ EcmContentSelector.prototype.changeFilter = function() {
 	
 	var filter = document.getElementById('Filter');
 	var action = filter.getAttribute("action");
+	if(!action) return;
 	action = action.substring(0, action.length - 2);
 	action += '&objectId=' + filter.options[filter.selectedIndex].value + '\')';
 	eval(action);
@@ -815,6 +832,18 @@ EcmContentSelector.prototype.isShowFilter = function() {
 	if(eXo.ecm.ECS.typeObj == "folder") {
 		filterContainer.style.display = "none";
 	} 
+};
+
+EcmContentSelector.prototype.showUpload = function() {
+	var upload = document.getElementById("UploadItem");
+	if(!upload) return;
+	upload.style.display = 'block';
+};
+
+EcmContentSelector.prototype.hideUpload = function() {
+	var upload = document.getElementById("UploadItem");
+	if(!upload) return;
+	upload.style.display = 'none';
 };
 
 eXo.ecm.ECS = new EcmContentSelector();
