@@ -17,5 +17,5 @@ CKEDITOR.plugins.add('test',
 );
 
 function showWindowPlugin(e){
-	window.open('http://127.0.0.1:8080/eXoStaticResources/eXoPlugins/test/test.html', 'TEST', 'width=500, height=400, scroll=no, resizable=yes');
+	window.open(CKEDITOR.eXoPath+'eXoPlugins/test/test.html');
 }

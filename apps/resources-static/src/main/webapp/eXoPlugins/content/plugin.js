@@ -20,5 +20,5 @@ CKEDITOR.plugins.add('content',
 );
 
 function showContentSelector(e){
-	window.open('http://127.0.0.1:8080/eXoStaticResources/eXoPlugins/content/content.html', 'CONTENT SELECTOR', 'width=1024, height=600, scroll=no, resizable=yes');
+	window.open(CKEDITOR.eXoPath+'eXoPlugins/content/content.html');
 }

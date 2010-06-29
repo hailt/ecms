@@ -6,19 +6,16 @@ CKEDITOR.eXoPath = CKEDITOR.basePath.substr(0, CKEDITOR.basePath.indexOf("ckedit
 
 // config to add custom plugin	
 (function() {CKEDITOR.plugins.addExternal('helloworld',CKEDITOR.eXoPath+'eXoPlugins/helloworld/', 'plugin.js');})();
-(function() {CKEDITOR.plugins.addExternal('test',CKEDITOR.eXoPath+'eXoPlugins/test/','plugin.js');})();
 (function() {CKEDITOR.plugins.addExternal('content',CKEDITOR.eXoPath+'eXoPlugins/content/','plugin.js');})();
+(function() {CKEDITOR.plugins.addExternal('insertGadget',CKEDITOR.eXoPath+'eXoPlugins/insertGadget/','plugin.js');})();
+(function() {CKEDITOR.plugins.addExternal('insertPortalLink',CKEDITOR.eXoPath+'eXoPlugins/insertPortalLink/','plugin.js');})();
 
 CKEDITOR.editorConfig = function( config ){
-	config.extraPlugins = 'helloworld,content';
-	config.toolbar_Basic.push(['helloworld.btn','-','content.btn']);	
-/*
- 	config.toolbar = "MyToolbarSet"; 
-	config.toolbar_MyToolbarSet = 
+	config.extraPlugins = 'helloworld,content,insertGadget,insertPortalLink';
+//	config.toolbar_Basic.push(['helloworld.btn','-','content.btn','-','insertPortalLink']);	
+	config.toolbar_Basic = 
 	[
-	    ['Bold','Italic','-'],['test.btn']
-	];	
-	config.toolbar_MyToolbarSet.push(['test.btn']);
-* */
+		['Source','-','Bold','Italic','-','NumberedList', 'BulletedList', '-', 'Link','Unlink'],  
+		['helloworld.btn','-','content.btn','-','insertGadget.btn','-','insertPortalLink.btn']
+	]
 };
-

@@ -7,6 +7,7 @@ eXp.init = function(){
 		eXo.ecm.ECS.context = context;
 		eXo.ecm.ECS.accessMode = accessMode;
 		eXo.ecm.ECS.userId = userName;
+		eXo.ecm.ECS.userLanguage = language;
 	}
 	var parentLocation = window.opener.location;
 	eXo.ecm.ECS.hostName = parentLocation.href.substring(0, parentLocation.href.indexOf(parentLocation.pathname));
@@ -16,7 +17,7 @@ eXp.init = function(){
 	eXo.ecm.ECS.cmdGetDriver = "getDrivers?";
 	eXo.ecm.ECS.cmdGetFolderAndFile = "getFoldersAndFiles?";
 	eXo.ecm.ECS.resourceType = this.getUrlParam("Type") || "File";
-	eXo.ecm.ECS.connector 	= this.getUrlParam("connector") ||  window.opener.eXo.ecm.WCMUtils.getRestContext();
+	eXo.ecm.ECS.connector = this.getUrlParam("connector") ||  window.opener.eXo.ecm.WCMUtils.getRestContext();
 	eXo.ecm.ECS.currentNode = "";
 	eXo.ecm.ECS.currentFolder = "/";
 	eXo.ecm.ECS.xmlHttpRequest = false;
@@ -60,3 +61,25 @@ eXp.loadScript = function(){
 		var eHead = win.document.getElementsByTagName("head")[0];
 		eHead.appendChild(eScript);
 };
+
+eXp.getNodes = function(DomX, nodeName){
+	if (!DomX || !nodeName) return null;
+	var node = DomX.getElementsByTagName(nodeName);
+	if (node.length) return node;
+	else return null;
+};
+
+eXp.getSingleNode = function(DomX, nodeName) {
+	var nodes = this.getNodes(DomX, nodeName);
+	if (nodes[0]) return nodes[0];
+	else return null;
+};
+
+eXp.getNodeValue = function(node, name) {
+	if (node || name !== undefined) {
+		var attribute = node.attributes.getNamedItem(name);
+		if (attribute) return attribute.value;
+	}
+	return new String();
+};
+
