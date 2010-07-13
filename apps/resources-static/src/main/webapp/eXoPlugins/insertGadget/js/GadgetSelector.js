@@ -24,7 +24,7 @@ var GadgetSelector = {
 
 GadgetSelector.initGadget = function() {
 	var command = GadgetSelector.cmdGadgetDriver + GadgetSelector.cmdGetFolderAndFile+"type="+GadgetSelector.resourceType;
-	var url = GadgetSelector.hostName + GadgetSelector.connector + command ;
+	var url = GadgetSelector.hostName + GadgetSelector.connector + command + "&host="+GadgetSelector.hostName;
 	GadgetSelector.requestGadget(url);
 };
 
@@ -87,7 +87,7 @@ GadgetSelector.loadGadgets = function() {
 
 	// right workspace
 	var command = GadgetSelector.cmdGadgetDriver + GadgetSelector.cmdGetFolderAndFile+"type="+GadgetSelector.resourceType;
-	var url = GadgetSelector.hostName + GadgetSelector.connector + command +"&currentFolder=/"+GadgetSelector.currentFolder+"/";
+	var url = GadgetSelector.hostName + GadgetSelector.connector + command +"&currentFolder=/"+GadgetSelector.currentFolder+"/&host="+GadgetSelector.hostName;
 	var xmlListGadget = eXo.ecm.WCMUtils.request(url);
 	var listFileGadget = xmlListGadget.getElementsByTagName("File");
 	var tblGadget = '';
@@ -95,12 +95,12 @@ GadgetSelector.loadGadgets = function() {
 	for(var k = 0; k < listFileGadget.length; k++) {
 		var gadget = listFileGadget[k];
 		var nameGadget 	= gadget.getAttribute("name");
-		var srcImg			= gadget.getAttribute("thumbnail");
+		var srcImg			= gadget.getAttribute("thumbnail").replace("http://localhost:8080", "");
 		listGadgetSource.push({
 			"name":nameGadget,
 			"metadata":gadget.getAttribute("metadata"),
-			"src":gadget.getAttribute("thumbnail"),
-			"url":gadget.getAttribute("url")
+			"src":gadget.getAttribute("thumbnail").replace("http://localhost:8080", ""),
+			"url":GadgetSelector.hostName+gadget.getAttribute("url")
 		});
 		GadgetSelector.listGadgetSource = listGadgetSource;
 		tblGadget 	+=	'<table class="ThumbnailTable">';
@@ -176,18 +176,21 @@ GadgetSelector.insertGadget = function(oGadget) {
 	var src = gadget.src;
 	var editor = CKEDITOR.GadgetSelector;
 	var random = new Date().getTime();
-	var newTag = editor.document.createElement("div");
+	var newTag = CKEDITOR.document.createElement("div");;
+	newTag.setAttribute("class", "TmpElement");
 	newTag.setAttribute("id", random);
 	newTag.setAttribute('float', 'left');
 	newTag.setHtml("<span>"+nameGadget+"</span>");
-	var newScript = editor.document.createElement("script");
-	newScript.setText( "/*WCM gadgets random\"" + random + "\" metadata\"" + metadata + "\" userprefs\"{}\" thumbnail\"" + src + "\" url\"" + url + "\"*/eXo.core.Browser.addOnLoadCallback('" + random + "', function() {eXo.gadget.UIGadget.createGadget('" + url + "','" + random + "', " + metadata + ", '{}', 'home', '/eXoGadgetServer/gadgets', 0, 0)});");
+	var newScript = CKEDITOR.document.createElement("script");
+	var strScript = "eXo.core.Browser.addOnLoadCallback('" + random + "', function() {eXo.gadget.UIGadget.createGadget('" + url + "','" + random + "', " + metadata + ", '{}', 'home', '/eXoGadgetServer/gadgets', 0, 0)});";	
+	var strShowImg = "document.getElementById('icon_"+random+"').style.display = 'none';";
+	newScript.setText(strScript+strShowImg);
 	editor.insertElement(newTag);
 	editor.insertElement(newScript);
-	
-	var imgGadget = editor.document.createElement("img");
-	imgGadget.setAttribute('classname','ThumbnailGadget');
-	imgGadget.setAttribute('src', src);
-	newTag.insertBeforeMe(imgGadget);
+	var oFakeNode = editor.document.createElement("img");
+	oFakeNode.className = 'cke_flash' ;
+	oFakeNode.setAttribute("id", 'icon_'+random);
+	oFakeNode.setAttribute('src',src);
+	newTag.insertBeforeMe(oFakeNode);
 	window.close();
 };

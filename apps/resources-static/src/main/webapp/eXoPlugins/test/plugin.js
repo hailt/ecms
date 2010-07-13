@@ -17,5 +17,5 @@ CKEDITOR.plugins.add('test',
 );
 
 function showWindowPlugin(e){
-	window.open(CKEDITOR.eXoPath+'eXoPlugins/test/test.html');
+	window.open(CKEDITOR.eXoPath+'eXoPlugins/test/test.html','Test','width=1024,height=600');
 }

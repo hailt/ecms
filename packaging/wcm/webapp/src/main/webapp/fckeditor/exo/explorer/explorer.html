@@ -489,6 +489,8 @@
 					"currentPortal=" + eXoPlugin.portalName,
 					buildXParam()
 				);
+		
+		param += "&host="+eXoPlugin.hostName;
 		eXp.sendRequest(connector, param, deployData);
 		eXp.store.currentNode = currentNode;
 		eXp.store.currentFolder = currentNode.getAttribute("name");

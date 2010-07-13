@@ -20,5 +20,5 @@ CKEDITOR.plugins.add('insertPortalLink',
 );
 
 function showInsertPortalLink(e){
-	window.open(CKEDITOR.eXoPath+'eXoPlugins/insertPortalLink/insertPortalLink.html', 'WCM INSERT PORTAL LINK', 'width=600, height=400, scroll=no, resizable=yes');
+	window.open(CKEDITOR.eXoPath+'eXoPlugins/insertPortalLink/insertPortalLink.html','WCMINSERTPORTALLINK','width=600, height=400');
 }

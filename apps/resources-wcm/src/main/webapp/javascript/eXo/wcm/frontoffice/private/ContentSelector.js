@@ -118,7 +118,7 @@ EcmContentSelector.prototype.buildECSTreeView = function() {
 		treeHTML += '<div class="Node" onclick="eXo.ecm.ECS.actionColExp(this);">';
 		treeHTML += 	'<div class="ExpandIcon">';		
 		treeHTML += 		'<a title="'+strName+'"href="javascript:void(0);" class="NodeIcon DefaultPageIcon" onclick="eXo.ecm.ECS.renderBreadcrumbs(this);eXo.ecm.ECS.listRootFolder(this);" name="'+strName+'" id="'+id+'" isUpload="'+isUpload+'">';
-		treeHTML +=			strName;	
+		treeHTML +=				strName;	
 		treeHTML +=			'</a>';
 		treeHTML += 	'</div>';			
 		treeHTML += '</div>';			
@@ -204,7 +204,8 @@ EcmContentSelector.prototype.renderSubTree = function(currentNode) {
 			treeHTML += '<div class="Node" onclick="eXo.ecm.ECS.actionColExp(this);">';
 			treeHTML += 	'<div class="ExpandIcon">';
 			treeHTML +=			'<a title="'+strName+'" href="javascript:void(0);" class="NodeIcon DefaultPageIcon" onclick="eXo.ecm.ECS.getDir(this, event);" name="'+strName+'" id="'+id+'"  driverPath="'+driverPath+'" repository="'+repository+'" workspace="'+workspace+'" isUpload="'+isUpload+'">';
-			treeHTML +=				strName;	
+			treeHTML +=				strName;
+			treeHTML +=			'</a>';
 			treeHTML +=		'</div>';
 			treeHTML +=	'</div>';
 		}

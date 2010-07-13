@@ -20,5 +20,5 @@ CKEDITOR.plugins.add('insertGadget',
 );
 
 function showInsertGadget(e){
-	window.open(CKEDITOR.eXoPath+'eXoPlugins/insertGadget/gadget.html?Type="Gadget"');
+	window.open(CKEDITOR.eXoPath+'eXoPlugins/insertGadget/gadget.html','WCMGadgetSelector','width=1024,height=600');
 }

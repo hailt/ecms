@@ -20,5 +20,5 @@ CKEDITOR.plugins.add('content',
 );
 
 function showContentSelector(e){
-	window.open(CKEDITOR.eXoPath+'eXoPlugins/content/content.html');
+	window.open(CKEDITOR.eXoPath+'eXoPlugins/content/content.html','WCMGadgetSelector','width=1024,height=600');
 }
