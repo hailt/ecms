@@ -1,24 +1,19 @@
-CKEDITOR.plugins.add('insertPortalLink',
+CKEDITOR.plugins.add( 'insertPortalLink',
+{
+	requires : [ 'dialog' ],
+	init : function( editor )
 	{
-		init : function(editor) {
-			var pluginName = 'InsertPortalLink';
-			var mypath = this.path;	
-			editor.ui.addButton(
-				'insertPortalLink.btn',
-				{
-					label : "WCM Insert Portal Link",
-					command : 'insertPortalLink.cmd',
-					icon : mypath + '/images/insertPortalLink.gif'
-				}
-			);
-			var cmd = editor.addCommand('insertPortalLink.cmd', {exec:showInsertPortalLink});
-			cmd.modes = {wysiwyg: 1, source: 1};
-			cmd.canUndo = false;	
-			CKEDITOR.insertPortalLink = editor;
-		}
-	}
-);
+		var command = editor.addCommand( 'insertPortalLink.cmd', new CKEDITOR.dialogCommand( 'insertPortalLink' ) );
+		command.modes = { wysiwyg:1, source:1 };
+		command.canUndo = false;
 
-function showInsertPortalLink(e){
-	window.open(CKEDITOR.eXoPath+'eXoPlugins/insertPortalLink/insertPortalLink.html','WCMINSERTPORTALLINK','width=600, height=400');
-}
+		editor.ui.addButton( 'insertPortalLink.btn',
+			{
+				label : 'InsertPortalLink',
+				command : 'insertPortalLink.cmd',
+				icon : this.path + 'images/insertPortalLink.gif'
+			});
+		CKEDITOR.insertPortalLink = editor;	
+		CKEDITOR.dialog.add( 'insertPortalLink', this.path + 'js/portalLink.js' );
+	}
+});

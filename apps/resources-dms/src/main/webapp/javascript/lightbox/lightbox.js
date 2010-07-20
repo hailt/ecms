@@ -104,14 +104,17 @@ Object.extend(Element, {
 	setWidth: function(element,w) {
 	   	element = $(element);
     	element.style.width = w +"px";
+				$(element).css("width", w);
 	},
 	setHeight: function(element,h) {
    		element = $(element);
     	element.style.height = h +"px";
+			$(element).css("height", h);
 	},
 	setTop: function(element,t) {
 	   	element = $(element);
     	element.style.top = t +"px";
+			$(element).css("top", t);
 	},
 	setSrc: function(element,src) {
     	element = $(element);

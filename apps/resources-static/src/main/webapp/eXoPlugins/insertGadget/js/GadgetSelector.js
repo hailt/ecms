@@ -176,15 +176,16 @@ GadgetSelector.insertGadget = function(oGadget) {
 	var src = gadget.src;
 	var editor = CKEDITOR.GadgetSelector;
 	var random = new Date().getTime();
-	var newTag = CKEDITOR.document.createElement("div");;
+	var newTag = editor.document.createElement("div");;
 	newTag.setAttribute("class", "TmpElement");
 	newTag.setAttribute("id", random);
 	newTag.setAttribute('float', 'left');
-	newTag.setHtml("<span>"+nameGadget+"</span>");
-	var newScript = CKEDITOR.document.createElement("script");
-	var strScript = "eXo.core.Browser.addOnLoadCallback('" + random + "', function() {eXo.gadget.UIGadget.createGadget('" + url + "','" + random + "', " + metadata + ", '{}', 'home', '/eXoGadgetServer/gadgets', 0, 0)});";	
-	var strShowImg = "document.getElementById('icon_"+random+"').style.display = 'none';";
-	newScript.setText(strScript+strShowImg);
+	var newScript = editor.document.createElement("script");
+	if(eXo.core.Browser.browserType == 'ie') {
+		newScript.$.text = "eXo.core.Browser.addOnLoadCallback('" + random + "', function() {eXo.gadget.UIGadget.createGadget('" + url + "','" + random + "', " + metadata + ", '{}', 'home', '/eXoGadgetServer/gadgets', 0, 0)}); document.getElementById('icon_"+random+"').style.display = 'none';";
+	} else {
+		newScript.setText("eXo.core.Browser.addOnLoadCallback('" + random + "', function() {eXo.gadget.UIGadget.createGadget('" + url + "','" + random + "', " + metadata + ", '{}', 'home', '/eXoGadgetServer/gadgets', 0, 0)}); document.getElementById('icon_"+random+"').style.display = 'none';");
+	}
 	editor.insertElement(newTag);
 	editor.insertElement(newScript);
 	var oFakeNode = editor.document.createElement("img");

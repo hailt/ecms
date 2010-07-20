@@ -215,6 +215,14 @@ EcmContentSelector.prototype.renderSubTree = function(currentNode) {
 };
 
 EcmContentSelector.prototype.listRootFolder = function(rootNode) {
+	var rightWS = document.getElementById('RightWorkspace');
+	var tblRWS  = eXo.core.DOMUtil.findDescendantsByTagName(rightWS, "table")[0];
+	var rowsRWS = eXo.core.DOMUtil.findDescendantsByTagName(tblRWS, "tr");
+	if(rowsRWS && rowsRWS.length > 0) {
+		for(var i = 0; i < rowsRWS.length; i++) {
+			if(i > 0) tblRWS.deleteRow(rowsRWS[i].rowIndex);
+		}
+	} 
 	if(eXo.ecm.ECS.typeObj != 'folder') return;
 	if(typeof(rootNode) == 'string') rootNode = document.getElementById(rootNode);
 	var nodeName = rootNode.getAttribute("name");
