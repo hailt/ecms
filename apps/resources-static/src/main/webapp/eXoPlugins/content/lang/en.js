@@ -1,5 +1,6 @@
 var UserLanguage = {
 	Filter								:	"Filter",
+	Any										: "Any",
 	WebContents							:   "Web Contents",
 	DMSDocuments						:	"DMS Documents",
 	Medias								:	"Medias",

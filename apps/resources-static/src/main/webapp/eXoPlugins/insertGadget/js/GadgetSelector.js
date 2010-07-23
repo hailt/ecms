@@ -7,17 +7,21 @@ var GadgetSelector = {
 			this.userLanguage = language;
 			var parentLocation = window.opener.location;
 			this.hostName = parentLocation.href.substring(0, parentLocation.href.indexOf(parentLocation.pathname));
-			this.repositoryName = "repository";
-			this.workspaceName = "collaboration";
-			this.cmdGadgetDriver = "/wcmGadget/";
-			this.cmdGetFolderAndFile = "getFoldersAndFiles?";
-			this.resourceType = eXp.getUrlParam("type") || "File";
-			this.connector	= eXp.getUrlParam("connector") ||  window.opener.eXo.ecm.WCMUtils.getRestContext();
-			this.currentNode = "";
-			this.currentFolder = "/";
-			this.xmlHttpRequest = false;
-			this.eventNode = false;
 		}
+		this.repositoryName = "repository";
+		this.workspaceName = "collaboration";
+		this.cmdGadgetDriver = "/wcmGadget/";
+		this.cmdGetFolderAndFile = "getFoldersAndFiles?";
+		this.resourceType = eXp.getUrlParam("type") || "File";
+		this.connector	= eXp.getUrlParam("connector") ||  window.opener.eXo.ecm.WCMUtils.getRestContext();
+		this.currentNode = "";
+		this.currentFolder = "/";
+		this.xmlHttpRequest = false;
+		this.eventNode = false;
+		
+		var currentEditor = eXp.getUrlParam("currentInstance") || "";
+		GadgetSelector.currentEditor = eval('CKEDITOR.instances.'+currentEditor);
+		
 		this.initGadget();
 	}
 }; 
@@ -174,7 +178,7 @@ GadgetSelector.insertGadget = function(oGadget) {
 	var metadata = gadget.metadata;
 	var url = gadget.url;
 	var src = gadget.src;
-	var editor = CKEDITOR.GadgetSelector;
+	var editor = GadgetSelector.currentEditor;
 	var random = new Date().getTime();
 	var newTag = editor.document.createElement("div");;
 	newTag.setAttribute("class", "TmpElement");

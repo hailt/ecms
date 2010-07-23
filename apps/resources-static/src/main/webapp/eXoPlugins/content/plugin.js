@@ -14,11 +14,10 @@ CKEDITOR.plugins.add('content',
 			var cmd = editor.addCommand('content.cmd', {exec:showContentSelector});
 			cmd.modes = {wysiwyg: 1, source: 1};
 			cmd.canUndo = false;	
-			CKEDITOR.ContentSelector = editor;
 		}
 	}
 );
 
 function showContentSelector(e){
-	window.open(CKEDITOR.eXoPath+'eXoPlugins/content/content.html','WCMGadgetSelector','width=1024,height=600');
+	window.open(CKEDITOR.eXoPath+'eXoPlugins/content/content.html?currentInstance='+e.name,'WCMGadgetSelector','width=1024,height=600');
 }

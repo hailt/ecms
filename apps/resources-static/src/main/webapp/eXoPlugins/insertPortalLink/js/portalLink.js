@@ -1,10 +1,11 @@
-﻿﻿/*
+﻿﻿﻿﻿/*
 Copyright (c) 2003-2010, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
 CKEDITOR.dialog.add( 'insertPortalLink', function( editor )
 {
+	var curInstance = editor.name;
 	return {
 		title : 'InsertPortalLink',
 		minWidth : 390,
@@ -121,7 +122,7 @@ CKEDITOR.dialog.add( 'insertPortalLink', function( editor )
 									'var newTag = CKEDITOR.document.createElement("a");'+
 									'newTag.setHtml(url);'+
 									'newTag.setAttribute("href", url);'+
-									'CKEDITOR.insertPortalLink.insertElement(newTag);'+
+									'CKEDITOR.instances["'+curInstance+'"].insertElement(newTag);'+
 									'CKEDITOR.dialog.getCurrent().hide();'+
 								'}'+
 							'</script>'+

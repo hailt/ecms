@@ -175,7 +175,7 @@ EcmContentSelector.prototype.getDir = function(currentNode, event) {
 	var filter = '';
 	var dropdownlist = document.getElementById("Filter");
 	if(dropdownlist) filter = dropdownlist.options[dropdownlist.selectedIndex].value;
-	else filter = 'Web Contents';
+	else filter = 'any';
 
 	var command = ECS.cmdEcmDriver+ECS.cmdGetFolderAndFile+"driverName="+driverName+"&currentFolder="+currentFolder+"&currentPortal="+ECS.portalName+"&repositoryName="+ECS.repositoryName+"&workspaceName="+ECS.workspaceName;
 	var url = ECS.hostName + ECS.connector+command+"&filterBy="+filter;
@@ -390,7 +390,7 @@ EcmContentSelector.prototype.actionBreadcrumbs = function(nodeId) {
 	var filter = '';
 	var dropdownlist = document.getElementById("Filter");
 	if(dropdownlist) filter = dropdownlist.options[dropdownlist.selectedIndex].value;
-	else filter = 'Web Contents';
+	else filter = 'any';
 	if(currentFolder == null) currentFolder = '';
 	var command = ECS.cmdEcmDriver+ECS.cmdGetFolderAndFile+"driverName="+driverName+"&currentFolder="+currentFolder+"&currentPortal="+ECS.portalName+"&repositoryName="+ECS.repositoryName+"&workspaceName="+ECS.workspaceName;
 	var url = ECS.hostName + ECS.connector+command+"&filterBy="+filter;
@@ -423,6 +423,7 @@ EcmContentSelector.prototype.listFiles = function(list) {
 		var tdNoContent = tblRWS.insertRow(1).insertCell(0);
 		tdNoContent.innerHTML = "There is no content";
 		tdNoContent.className = "Item TRNoContent";
+		tdNoContent.userLanguage = "UserLanguage.NoContent";	
 		document.getElementById("pageNavPosition").innerHTML = "";
 		return;
 	}
@@ -472,6 +473,7 @@ EcmContentSelector.prototype.listFolders = function(list) {
 		var tdNoContent = tblRWS.insertRow(1).insertCell(0);
 		tdNoContent.innerHTML = "There is no content";
 		tdNoContent.className = "Item TRNoContent";
+		tdNoContent.userLanguage = "UserLanguage.NoContent";
 		document.getElementById("pageNavPosition").innerHTML = "";
 		return;
 	}
@@ -522,6 +524,7 @@ EcmContentSelector.prototype.listMutilFiles = function(list) {
 		var tdNoContent = rowTmp.insertCell(0);
 		tdNoContent.innerHTML = "There is no content";
 		tdNoContent.className = "Item TRNoContent";
+		tdNoContent.userLanguage = "UserLanguage.NoContent";
 		document.getElementById("pageNavPosition").innerHTML = "";
 		return;
 	}
@@ -678,6 +681,7 @@ EcmContentSelector.prototype.insertContent = function(objNode) {
 		var url 	= objNode.getAttribute('url');
 		var name 	= objNode.innerHTML;
 		var strHTML = '';	
+		var editor = eXo.ecm.ECS.currentEditor ;
 		if(window.opener.document.getElementById(eXp.getParameterValueByName("browserType"))){		
 			strHTML += url;		
 			window.opener.document.getElementById(eXp.getParameterValueByName("browserType")).value=strHTML;
@@ -687,10 +691,10 @@ EcmContentSelector.prototype.insertContent = function(objNode) {
 			} else {
 				strHTML += "<a href='" + url+"' style='text-decoration:none;'>"+name+"</a>";		
 			}
-			CKEDITOR.ContentSelector.insertHtml(strHTML);
+			editor.insertHtml(strHTML);
 		}
 		window.close();			
-		CKEDITOR.ContentSelector.OnAfterSetHTML = window.close();
+		editor.OnAfterSetHTML = window.close();
 	}
 };
 
@@ -853,6 +857,25 @@ EcmContentSelector.prototype.hideUpload = function() {
 	var upload = document.getElementById("UploadItem");
 	if(!upload) return;
 	upload.style.display = 'none';
+};
+
+EcmContentSelector.prototype.languageInit = function() {
+	if (eXp.userLanguage) {
+		var aElements = document.getElementsByTagName("*");
+		for (var i = 0 ; i < aElements.length; ++i) {
+			if (aElements[i].getAttribute && aElements[i].getAttribute("userLanguage")) {
+				var userLanguage = eval(aElements[i].getAttribute("userLanguage"));
+				if (userLanguage) {
+					var textNode = document.createTextNode(userLanguage);
+					aElements[i].innerHTML = "";
+					aElements[i].appendChild(textNode);
+				}
+			}
+		}
+	} else {
+		eXoPlugin.loadScript(window, "lang/en.js");
+		setTimeout(languageInit, 1000);
+	}
 };
 
 eXo.ecm.ECS = new EcmContentSelector();

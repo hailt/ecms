@@ -1,5 +1,6 @@
 var UserLanguage = {
 	Filter							:	"Lọc",
+	Any									: "Tất cả",
 	WebContents						:   "Nội dung Web",
 	DMSDocuments					:	"Tài liệu DMS",
 	Medias							:	"Đa phương tiện",

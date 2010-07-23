@@ -166,11 +166,11 @@ UIFormGeneratorPortlet.prototype.renderComponent = function(typeComp) {
 	node.setAttribute('typeComponent', typeComp);
 	document.getElementById('MiddleCenterViewBoxStyle').appendChild(node);
 
-	if(!FCKeditorAPI.GetInstance('RichTextEditorContent')) {
-		var oFCKEditor = new FCKeditor('RichTextEditorContent');
-		oFCKEditor.BasePath = '/portal/fckeditor/';
-		oFCKEditor.ToolbarSet = 'SuperBasicWCM';
-		oFCKEditor.ReplaceTextarea();
+	if(!CKEDITOR.instances['RichTextEditorContent']) {
+		CKEDITOR.replace( 'RichTextEditorContent',
+    {
+        toolbar : 'CompleteWCM'
+    });
 	}
 };
 
@@ -331,8 +331,8 @@ UIFormGeneratorPortlet.prototype.updateValue = function(evt) {
 			textarea.value = srcEle.value;
 			break
 		case "WYSIWYG" :
-			var oFCKEditor = FCKeditorAPI.GetInstance('RichTextEditorContent') ;
-			oFCKEditor.SetHTML(srcEle.value);
+			var editor = CKEDITOR.instances.['RichTextEditorContent'] ;
+			editor.setHTML(srcEle.value);
 			break;
 		case "upload" : 
 			break;

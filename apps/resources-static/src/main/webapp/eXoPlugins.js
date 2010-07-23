@@ -24,6 +24,8 @@ eXp.init = function(){
 	eXo.ecm.ECS.driverName = "";
 	eXo.ecm.ECS.eventNode = false;
 	eXo.ecm.ECS.isUpload = false;
+	var currentEditor = this.getUrlParam("currentInstance") || "";
+	eXo.ecm.ECS.currentEditor = eval('CKEDITOR.instances.'+currentEditor);
 };
 
 eXp.getID = function() {
@@ -82,4 +84,3 @@ eXp.getNodeValue = function(node, name) {
 	}
 	return new String();
 };
-

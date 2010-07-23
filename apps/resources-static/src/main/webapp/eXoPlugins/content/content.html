@@ -19,7 +19,7 @@
 		<script type="text/javascript">
 			var CKEDITOR = window.opener.CKEDITOR || {};
 			eXp.init();
-			eXp.userLanguage = CKEDITOR.lang.detect() || "en";
+			eXp.userLanguage = eXo.ecm.ECS.userLanguage || "en";
 			window.onload = eXp.loadScript(window, "lang/" + eXp.userLanguage + ".js"); 
 		</script>
 </head>
@@ -35,7 +35,8 @@
 					<div class="FinterTitle" userLanguage="UserLanguage.Filter">Filter: </div>
 					<div class="FinterInput">
 						<select class="Pinter" id="Filter" onchange="eXo.ecm.ECS.changeFilter();">
-							<option value="Web Contents" selected="selected" userLanguage="UserLanguage.WebContents">Web Contents</option>
+							<option value="Web Contents" selected="selected" userLanguage="UserLanguage.Any">Any</option>	
+							<option value="Web Contents" userLanguage="UserLanguage.WebContents">Web Contents</option>
 							<option value="DMS Documents" userLanguage="UserLanguage.DMSDocuments">DMS Documents</option>
 							<option value="Medias" userLanguage="UserLanguage.Medias">Medias</option>
 						</select>
@@ -53,7 +54,7 @@
 					<!-- ====================================== UPLOAD ============================================-->					
 					<!-- ====================================== SETTING ============================================-->
 					<div class="SettingIcon" onmouseover="" style="position:relative;">	
-						<a href="#" userLanguage="UserLanguage.SettingTitle">Setting</a>
+						<a href="#" userLanguage="UserLanguage.SettingTitle" style="display:none;">Setting</a>
 						<div class="SettingContainer">
 				      <div style="display: none; position: absolute;" class="UIRightClickPopupMenu">
 				      	<div class="UIContextMenuContainer">
@@ -179,7 +180,6 @@
 	
 <!-- =================================BEGIN UPLOAD ====================================== -->
 <div id="hideContainer" class="HideContainer" style="display: none;">
-		
 	<div class="AlertContainer">
 		<div class="AlertForm">
 			<div align="center"><span userLanguage="UserLanguage.LabelAlert"> Please choose a file before upload !</span></div>
@@ -340,6 +340,7 @@
 <script type="text/javascript">
 	window.onload = function(){
 		eXo.ecm.ECS.initRequestXmlTree('editor');
+		eXo.ecm.ECS.languageInit();
 	};
 </script>
 </body>

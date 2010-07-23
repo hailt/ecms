@@ -164,13 +164,23 @@ UIFormGeneratorPortlet.prototype.renderComponent = function(typeComp) {
 	node.setAttribute('typeComponent', typeComp);
 	document.getElementById('MiddleCenterViewBoxStyle').appendChild(node);
 
-	if(typeComp == 'wysiwyg' && !FCKeditorAPI.GetInstance('RichTextEditorContent')) {
-		var oFCKEditor = new FCKeditor('RichTextEditorContent_'+eXo.ecm.UIFormGeneratorPortlet.countFCK);
-		eXo.ecm.UIFormGeneratorPortlet.countFCK++;
-		oFCKEditor.BasePath = '/ecm-wcm-extension/fckeditor/';
-		oFCKEditor.ToolbarSet = 'SuperBasicWCM';
-		oFCKEditor.ReplaceTextarea();
+if(typeComp == 'wysiwyg' && !CKEDITOR.instances['RichTextEditorContent']) {
+		var idEditor = 	'RichTextEditorContent_'+ eXo.ecm.UIFormGeneratorPortlet.countFCK;
+		CKEDITOR.replace( idEditor,
+    {
+        toolbar : 'BasicWCM'
+    });
+		
 	}
+/*
+	if(typeComp == 'wysiwyg' && !CKEDITOR.instances['RichTextEditorContent']) {
+		var oCKEDITOR = new CKEDITOR('RichTextEditorContent_'+eXo.ecm.UIFormGeneratorPortlet.countFCK);
+		eXo.ecm.UIFormGeneratorPortlet.countFCK++;
+		//oFCKEditor.BasePath = '/ecm-wcm-extension/fckeditor/';
+		//oFCKEditor.ToolbarSet = 'SuperBasicWCM';
+		oCKEDITOR.ReplaceTextarea();
+	}
+*/
 };
 
 
@@ -330,8 +340,11 @@ UIFormGeneratorPortlet.prototype.updateValue = function(evt) {
 			textarea.value = srcEle.value;
 			break
 		case "WYSIWYG" :
-			var oFCKEditor = FCKeditorAPI.GetInstance('RichTextEditorContent') ;
-			oFCKEditor.SetHTML(srcEle.value);
+			var eltComp = DOMUtil.findFirstDescendantByClass(componentNode, 'td', 'FieldComponent');
+			var txtArea = DOMUtil.findFirstChildByClass(eltComp, "textarea", "Textarea");
+			var iEditor = txtArea.id;
+			var editor = eval('CKEDITOR.instances.'+iEditor);
+			editor.setText(srcEle.value);		
 			break;
 		case "upload" : 
 			break;

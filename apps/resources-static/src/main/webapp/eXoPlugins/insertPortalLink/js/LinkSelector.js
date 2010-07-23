@@ -131,7 +131,7 @@ LinkSelector.listFileLinks = function(fileLinks) {
 		var tdNoContent = tblRWS.insertRow(1).insertCell(0);
 		tdNoContent.innerHTML = "There is no content";
 		tdNoContent.className = "Item TRNoContent";
-		tdNoContent.setAttribute('colspan', 3);
+		tdNoContent.setAttribute('colspan', 2);
 		return;
 	}
 
@@ -145,12 +145,10 @@ LinkSelector.listFileLinks = function(fileLinks) {
 		var nameLink = fileLinks[i].getAttribute('name');
 		var urlLink	 = fileLinks[i].getAttribute('url');
 		var dateCreated = fileLinks[i].getAttribute('dateCreated');
-		var size = fileLinks[i].getAttribute('size');
 		var newRow = tblRWS.insertRow(i+1);
 		newRow.className = clazz;
 		newRow.insertCell(0).innerHTML = '<div class="Item" url="'+urlLink+'" onclick="LinkSelector.insertLink(this);">'+nameLink+'</div>';
 		newRow.insertCell(1).innerHTML = '<div class="Item">'+ dateCreated +'</div>';
-		newRow.insertCell(2).innerHTML = '<div class="Item">'+ size+'&nbsp;kb' +'</div>';
 	}
 };
 
