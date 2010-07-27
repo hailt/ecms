@@ -619,11 +619,11 @@ body {
 }
 
 .UIHomePagePortlet  .UIWorkingWorkspace .RightWorkspace .Item{
-	padding-left: 20px;
 	border-left: 1px solid #f4f4f4;
 	line-height: 26px;
 	background-position: left 3px;
 	cursor: pointer;
+	padding:2px 0 2px 20px;
 }
 
 .UIHomePagePortlet  .UIWorkingWorkspace .LeftWorkspace .Node {
@@ -660,28 +660,28 @@ body {
 	background: url('../images/DefaultPageIcon.gif') no-repeat scroll left center;
 }
 .text_html16x16Icon {
-  background: url('images/icons/html.gif') no-repeat left center; /* orientation=lt */
-  background: url('images/icons/html.gif') no-repeat right center; /* orientation=rt */
+  background: url('../images/icons/html.gif') no-repeat left center; /* orientation=lt */
+  background: url('../images/icons/html.gif') no-repeat right center; /* orientation=rt */
 }
  
 .text_css16x16Icon {
-  background: url('images/icons/css.gif') no-repeat left center; /* orientation=lt */
-  background: url('images/icons/css.gif') no-repeat right center; /* orientation=rt */
+  background: url('../images/icons/css.gif') no-repeat left center; /* orientation=lt */
+  background: url('../images/icons/css.gif') no-repeat right center; /* orientation=rt */
 }
  
 .application_x-javascript16x16Icon {
-  background: url('images/icons/js.gif') no-repeat left center; /* orientation=lt */
-  background: url('images/icons/js.gif') no-repeat right center; /* orientation=rt */
+  background: url('../images/icons/js.gif') no-repeat left center; /* orientation=lt */
+  background: url('../images/icons/js.gif') no-repeat right center; /* orientation=rt */
 }
 
 .image_png16x16Icon {
-  background: url('images/icons/png.gif') no-repeat left center; /* orientation=lt */
-  background: url('images/icons/NodeTypes/png.gif') no-repeat right center; /* orientation=rt */
+  background: url('../images/icons/png.gif') no-repeat left center; /* orientation=lt */
+  background: url('../images/icons/NodeTypes/png.gif') no-repeat right center; /* orientation=rt */
 }
 
 .exo_image16x16Icon {
-  background: url('images/icons/exo-image.gif') no-repeat left center; /* orientation=lt */
-  background: url('images/icons/exo-image.gif') no-repeat right center; /* orientation=rt */
+  background: url('../images/icons/exo-image.gif') no-repeat left center; /* orientation=lt */
+  background: url('../images/icons/exo-image.gif') no-repeat right center; /* orientation=rt */
 }
 
 .UIAction .ActionContainer {
@@ -722,7 +722,7 @@ body {
 
 .UIAction .LightBlueStyle .ButtonRight {
  background: url('images/LightBlueStyle.gif') no-repeat right top;
- padding: 0px 3px 0px 0px ;
+ padding: 0px 3px 0px 0px;
 }
 
 .UIAction .LightBlueStyle .ButtonMiddle {

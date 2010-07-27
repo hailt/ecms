@@ -440,11 +440,14 @@ EcmContentSelector.prototype.listFiles = function(list) {
 		var path 			= list[i].getAttribute("path");
 		var nodeType	= list[i].getAttribute("nodeType");
 		var node = list[i].getAttribute("name");
+		var size = 	list[i].getAttribute("size");
+		if(size == "0") size = "none";
+		else size += '&nbsp;kb';
 		var newRow = tblRWS.insertRow(i+1);
 		newRow.className = clazz;		
 		newRow.insertCell(0).innerHTML = '<a class="Item '+clazzItem+'" url="'+url+'" path="'+path+'" nodeType="'+nodeType+'" onclick="eXo.ecm.ECS.insertContent(this);">'+node+'</a>';
 		newRow.insertCell(1).innerHTML = '<div class="Item">'+ list[i].getAttribute("dateCreated") +'</div>';
-		newRow.insertCell(2).innerHTML = '<div class="Item">'+ list[i].getAttribute("size")+'&nbsp;kb' +'</div>';
+		newRow.insertCell(2).innerHTML = '<div class="Item">'+ size +'</div>';
 		
 		if(i > 13) {
 			var numberRecords = 0;
