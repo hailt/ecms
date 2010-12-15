@@ -36,6 +36,7 @@ public final class LinkUtils {
    * @param path the path to convert
    * @return the real absolute path
    */
+   
   public static String evaluatePath(String path) {
     if (!path.startsWith("/")) {
       throw new IllegalArgumentException("The path '" + path +  "' must be an absolute path");
@@ -209,5 +210,5 @@ public final class LinkUtils {
     }
     return path;
   }
-  
+ 
 }

@@ -164,7 +164,7 @@ public class WCMComposerImpl implements WCMComposer, Startable {
 		}
 		if (MODE_LIVE.equals(mode) && isCached) {
 			String hash = getHash(nodeIdentifier, version, remoteUser, language, null, null, null, null);
-			cache.remove(hash);
+//			cache.remove(hash);
 			cache.put(hash, node);
 		}
 		return node;
@@ -211,7 +211,7 @@ public class WCMComposerImpl implements WCMComposer, Startable {
 		}
 		if (MODE_LIVE.equals(mode) && isCached) {
 			String hash = getHash(path, version, remoteUser, language, recursive, orderBy, orderType, primaryType);
-			cache.remove(hash);
+//			cache.remove(hash);
 			cache.put(hash, nodes);
 		}
 		return nodes;    
@@ -284,7 +284,12 @@ public class WCMComposerImpl implements WCMComposer, Startable {
     String languageFilter = filters.get(FILTER_LANGUAGE);
     if (languageFilter!=null) {
       addUsedLanguage(languageFilter);
-      Node lnode = multiLanguageService.getLanguage(node, languageFilter);
+      Node lnode = null;
+      try {
+        lnode = multiLanguageService.getLanguage(node, languageFilter);
+      } catch (AccessDeniedException e) {
+        if (log.isTraceEnabled()) log.trace("AccessDenied on "+languageFilter+" translation for "+node.getPath());
+      }
       if (lnode!=null) {
 
         viewNode = getPublishedContent(lnode, filters);
@@ -364,7 +369,7 @@ public class WCMComposerImpl implements WCMComposer, Startable {
 				 */
 				Node node = wcmService.getReferencedContent(sessionProvider, repository, workspace, path);
 				if (node!=null) {
-					oid = node.getUUID();
+				  if (node.isNodeType("mix:referenceable")) oid = node.getUUID();
 					/* remove parent cache */
 					updateContents(repository, workspace, part, filters);
 					taxonomyService = WCMCoreUtils.getService(TaxonomyService.class);

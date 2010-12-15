@@ -71,8 +71,8 @@ import org.exoplatform.webui.form.UIForm;
 public class UIPermissionForm extends UIForm implements UISelectable {
   
   final static public String PERMISSION   = "permission";
-
   final static public String POPUP_SELECT = "SelectUserOrGroup";
+  final static public String SYMLINK = "exo:symlink";
 
   private Node               currentNode;
   private static final Log LOG  = ExoLogger.getLogger("explorer.UIPermissionForm");
@@ -277,9 +277,11 @@ public class UIPermissionForm extends UIForm implements UISelectable {
       }
       Node realNode = uiExplorer.getRealCurrentNode();
       LinkManager linkManager = uiExplorer.getApplicationComponent(LinkManager.class);
-      if (linkManager.isLink(realNode)) {
-        // Reset the permissions
-        linkManager.updateLink(realNode, currentNode);
+      List<Node> symlinks = linkManager.getAllLinks(currentNode, SYMLINK, uiExplorer.getRepositoryName());
+      for (Node symlink : symlinks) {
+        try {
+          linkManager.updateLink(symlink, currentNode);
+        } catch (Exception e) {}
       }
       currentNode.getSession().save();
       uiForm.refresh();

@@ -31,7 +31,7 @@ public class UIEditingPortlet extends UIPortletApplication {
 	Element elementS = response.createElement("script");
 	elementS.setAttribute("type", "text/javascript");
 	elementS.setAttribute("src", "/eXoWCMResources/javascript/eXo/wcm/frontoffice/private/QuickEdit.js");
-	response.addProperty(MimeResponse.MARKUP_HEAD_ELEMENT,elementS); 
+	response.addProperty(MimeResponse.MARKUP_HEAD_ELEMENT,elementS);
 
     super.processRender(app, context) ;
   }
