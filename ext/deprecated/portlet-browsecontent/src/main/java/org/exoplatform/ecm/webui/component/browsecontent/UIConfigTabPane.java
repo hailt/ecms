@@ -65,9 +65,8 @@ public class UIConfigTabPane extends UIContainer {
   
   public List<SelectItemOption<String>> getWorkSpaceOption() throws Exception {
     List<SelectItemOption<String>> Options = new ArrayList<SelectItemOption<String>>();
-    String repository = getAncestorOfType(UIBrowseContentPortlet.class).getPreferenceRepository();
     String[] workspaceNames = getApplicationComponent(RepositoryService.class)
-    .getRepository(repository).getWorkspaceNames();
+    .getCurrentRepository().getWorkspaceNames();
     for(String workspace:workspaceNames) {
       Options.add(new SelectItemOption<String>(workspace,workspace));
     }   

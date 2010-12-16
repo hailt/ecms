@@ -194,7 +194,7 @@ public class ManageDriveServiceImpl implements ManageDriveService, Startable {
   public List<DriveData> getAllDrives(String repository) throws Exception {
     List<DriveData> allDrives = (List<DriveData>) drivesCache_.get(ALL_DRIVES_CACHED);
     if ((allDrives != null) && (allDrives.size() > 0)) return allDrives;
-    Session session = getSession(repository) ;    
+    Session session = getSession(null) ;    
     Node driveHome = (Node)session.getItem(baseDrivePath_);
     NodeIterator itr = driveHome.getNodes() ;
     List<DriveData> driveList = new ArrayList<DriveData>() ;
@@ -226,7 +226,7 @@ public class ManageDriveServiceImpl implements ManageDriveService, Startable {
    * {@inheritDoc}
    */
   public DriveData getDriveByName(String name, String repository) throws Exception{  
-    Session session = getSession(repository) ;    
+    Session session = getSession(null) ;    
     Node driveHome = (Node)session.getItem(baseDrivePath_);
     if (driveHome.hasNode(name)){
       Node drive = driveHome.getNode(name) ;
@@ -259,9 +259,8 @@ public class ManageDriveServiceImpl implements ManageDriveService, Startable {
    */
   public void addDrive(String name, String workspace, String permissions, String homePath, 
       String views, String icon, boolean viewReferences, boolean viewNonDocument, 
-      boolean viewSideBar, boolean showHiddenNode, String repository, String allowCreateFolder,
-      String allowNodeTypesOnTree) throws Exception {    
-    Session session = getSession(repository);
+      boolean viewSideBar, boolean showHiddenNode, String allowCreateFolder, String allowNodeTypesOnTree) throws Exception {    
+    Session session = getSession(null);
     Node driveHome = (Node)session.getItem(baseDrivePath_) ;
     if (!driveHome.hasNode(name)){
       Node driveNode = driveHome.addNode(name, "exo:drive");
@@ -322,7 +321,7 @@ public class ManageDriveServiceImpl implements ManageDriveService, Startable {
    * {@inheritDoc}
    */
   public void removeDrive(String driveName, String repository) throws Exception {
-    Session session = getSession(repository);
+    Session session = getSession(null);
     Node driveHome = (Node)session.getItem(baseDrivePath_) ;
     if(driveHome.hasNode(driveName)){
       driveHome.getNode(driveName).remove() ;
@@ -339,8 +338,8 @@ public class ManageDriveServiceImpl implements ManageDriveService, Startable {
    * @throws Exception
    */
   private Session getSession(String repository) throws Exception{    
-    ManageableRepository manaRepository = repositoryService_.getRepository(repository) ;
-    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig(repository);
+    ManageableRepository manaRepository = repositoryService_.getCurrentRepository();
+    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig();
     return manaRepository.getSystemSession(dmsRepoConfig.getSystemWorkspace()) ;          
   }
 
@@ -348,7 +347,7 @@ public class ManageDriveServiceImpl implements ManageDriveService, Startable {
    * {@inheritDoc}
    */
   public boolean isUsedView(String viewName, String repository) throws Exception {
-    Session session = getSession(repository);      
+    Session session = getSession(null);      
     Node driveHome = (Node)session.getItem(baseDrivePath_) ;
     NodeIterator iter = driveHome.getNodes() ;
     while(iter.hasNext()) {

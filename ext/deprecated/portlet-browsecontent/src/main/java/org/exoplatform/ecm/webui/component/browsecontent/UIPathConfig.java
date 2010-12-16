@@ -150,14 +150,14 @@ public class UIPathConfig extends UIForm implements UISelectable{
   
   private ManageableRepository getRepository(String repositoryName) throws Exception{
     RepositoryService repositoryService = getApplicationComponent(RepositoryService.class);
-    return repositoryService.getRepository(repositoryName);
+    return repositoryService.getCurrentRepository();
   } 
   
   private List<SelectItemOption<String>> getWorkSpaceOption(String repository) throws Exception {
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>();
     Session session;
     String[] workspaceNames = getApplicationComponent(RepositoryService.class)
-    .getRepository(repository).getWorkspaceNames();
+    .getCurrentRepository().getWorkspaceNames();
     wsNames_.clear();
     for(String workspace:workspaceNames) {
       session = SessionProviderFactory.createSessionProvider().getSession(workspace, getRepository(repository));

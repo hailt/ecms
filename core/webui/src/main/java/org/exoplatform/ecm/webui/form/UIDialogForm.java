@@ -960,7 +960,7 @@ public class UIDialogForm extends UIForm {
   public String getPathTaxonomy() throws Exception {
     NodeHierarchyCreator nodeHierarchyCreator = getApplicationComponent(NodeHierarchyCreator.class);
     DMSConfiguration dmsConfiguration = getApplicationComponent(DMSConfiguration.class);
-    String workspace = dmsConfiguration.getConfig(repositoryName).getSystemWorkspace();
+    String workspace = dmsConfiguration.getConfig().getSystemWorkspace();
     String userName = Util.getPortalRequestContext().getRemoteUser();
     Session session;
     if (userName != null)

@@ -125,7 +125,7 @@ public class TagStylePlugin extends BaseComponentPlugin{
    ExoContainer myContainer = ExoContainerContext.getCurrentContainer();
    DMSConfiguration dmsConfiguration = (DMSConfiguration)
    myContainer.getComponentInstanceOfType(DMSConfiguration.class);
-   DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration.getConfig(repository);   
+   DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration.getConfig();   
    return manageableRepository.getSystemSession(dmsRepoConfig.getSystemWorkspace());
  }
 }

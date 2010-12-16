@@ -127,7 +127,7 @@ public class ScriptServiceImpl extends BaseResourceLoaderService implements Scri
         List<RepositoryEntry> repositories = repositoryService_.getConfig().getRepositoryConfigurations() ;                
         DMSRepositoryConfiguration dmsRepoConfig = null;
         for(RepositoryEntry repo : repositories) {
-          dmsRepoConfig = dmsConfiguration_.getConfig(repo.getName());
+          dmsRepoConfig = dmsConfiguration_.getConfig();
           session = repositoryService_.getRepository(repo.getName()).getSystemSession(dmsRepoConfig.getSystemWorkspace());          
           Iterator<ObjectParameter> iter = plugin.getScriptIterator() ;
           while(iter.hasNext()) {
@@ -144,7 +144,7 @@ public class ScriptServiceImpl extends BaseResourceLoaderService implements Scri
         repository = repositoryService_.getDefaultRepository().getConfiguration().getName();
       }
       ManageableRepository mRepository = repositoryService_.getRepository(repository) ;
-      DMSRepositoryConfiguration dmsDefaultRepoConfig = dmsConfiguration_.getConfig(repository);
+      DMSRepositoryConfiguration dmsDefaultRepoConfig = dmsConfiguration_.getConfig();
       session = mRepository.getSystemSession(dmsDefaultRepoConfig.getSystemWorkspace()) ;          
       Iterator<ObjectParameter> iter = plugin.getScriptIterator() ;
       while(iter.hasNext()) {
@@ -170,7 +170,7 @@ public class ScriptServiceImpl extends BaseResourceLoaderService implements Scri
   public void initRepo(String repository) throws Exception {
     ManageableRepository mRepository = repositoryService_.getRepository(repository) ;
     String scriptsPath = getBasePath();
-    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig(repository);
+    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig();
     Session session = mRepository.getSystemSession(dmsRepoConfig.getSystemWorkspace()) ;
     for(ScriptPlugin plugin : plugins_) {
       if(!plugin.getAutoCreateInNewRepository()) continue ;
@@ -407,7 +407,7 @@ public class ScriptServiceImpl extends BaseResourceLoaderService implements Scri
         for(RepositoryEntry repo : repositories) {
           try {
             ManageableRepository manageableRepository = repositoryService_.getRepository(repo.getName()) ;
-            dmsRepoConfig = dmsConfiguration_.getConfig(repo.getName());
+            dmsRepoConfig = dmsConfiguration_.getConfig();
             jcrSession = manageableRepository.getSystemSession(dmsRepoConfig.getSystemWorkspace());
             Property property = (Property) jcrSession.getItem(path);
             if ("jcr:data".equals(property.getName())) {
@@ -492,8 +492,8 @@ public class ScriptServiceImpl extends BaseResourceLoaderService implements Scri
    * @throws Exception
    */
   private Session getSession(String repository, SessionProvider provider) throws Exception {
-    ManageableRepository manageableRepository = repositoryService_.getRepository(repository);
-    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig(repository);
+    ManageableRepository manageableRepository = repositoryService_.getCurrentRepository();
+    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig();
     // String systemWokspace = manageableRepository.getConfiguration().getSystemWorkspaceName();
     return provider.getSession(dmsRepoConfig.getSystemWorkspace(), manageableRepository);
   }

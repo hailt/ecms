@@ -68,7 +68,7 @@ public class UIRepositoryControl extends UIContainer {
     UIRepositorySelectForm uiSelectForm = createUIComponent(UIRepositorySelectForm.class, null,
         null);
     try {
-      rservice.getRepository(repository);
+      rservice.getCurrentRepository();
       uiSelectForm.setOptionValue(getRepoItem(true, rservice));
       uiSelectForm.setSelectedValue(repository);
     } catch (Exception e) {

@@ -254,7 +254,7 @@ public class UITreeExplorer extends UIContainer {
   
   private List<Node> getTreeWithNoDocuments(List<Node> childrenList) throws Exception {
     TemplateService templateService = getApplicationComponent(TemplateService.class);
-    List<String> nodeTypes = templateService.getAllDocumentNodeTypes(getRepository());
+    List<String> nodeTypes = templateService.getAllDocumentNodeTypes(null);
     List<Node> treeList = new ArrayList<Node>();
     for(Node node : childrenList) {
       if(nodeTypes.contains(node.getPrimaryNodeType().getName())) continue;

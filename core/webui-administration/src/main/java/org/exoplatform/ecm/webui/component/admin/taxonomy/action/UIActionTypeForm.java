@@ -141,8 +141,8 @@ public class UIActionTypeForm extends UIForm {
       TaxonomyService taxonomyService = uiTaxonomyTreeContainer.getApplicationComponent(TaxonomyService.class);
       Node taxoTreeNode = null;
       try {
-        taxoTreeNode = taxonomyService.getTaxonomyTree(taxoTreeData.getRepository(),
-            taxoTreeData.getTaxoTreeName(), true);
+        taxoTreeNode = taxonomyService.getTaxonomyTree(taxoTreeData.getTaxoTreeName(),
+            true);
       } catch (RepositoryException re) {
       }
       uiActionForm.createNewAction(taxoTreeNode, actionType, true);

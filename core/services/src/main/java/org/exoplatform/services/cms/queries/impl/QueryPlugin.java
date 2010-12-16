@@ -107,7 +107,7 @@ public class QueryPlugin extends BaseComponentPlugin {
   
   private Session getSession(String repository) throws Exception {
     ManageableRepository manageableRepository = repositoryService_.getRepository(repository) ;
-    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig(repository);
+    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig();
     return manageableRepository.getSystemSession(dmsRepoConfig.getSystemWorkspace()) ;    
   }
 

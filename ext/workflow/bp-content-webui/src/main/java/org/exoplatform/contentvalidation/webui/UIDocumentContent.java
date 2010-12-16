@@ -121,7 +121,7 @@ public class UIDocumentContent extends UIContainer implements NodePresentation {
   public ResourceResolver getTemplateResourceResolver(WebuiRequestContext context, String template) {
     try {
       DMSConfiguration dmsConfiguration = getApplicationComponent(DMSConfiguration.class);
-      String wsName = dmsConfiguration.getConfig(getRepository()).getSystemWorkspace();
+      String wsName = dmsConfiguration.getConfig().getSystemWorkspace();
       return new JCRResourceResolver(getRepository(), wsName, Utils.EXO_TEMPLATEFILE) ;
     } catch (Exception e) {
       LOG.error("Unexpected error", e);

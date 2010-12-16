@@ -155,7 +155,7 @@ public class UILanguageDialogForm extends UIDialogForm implements UIPopupCompone
   
   private String getDMSWorkspace() {
     DMSConfiguration dmsConfiguration = getApplicationComponent(DMSConfiguration.class);
-    return dmsConfiguration.getConfig(repositoryName).getSystemWorkspace();   
+    return dmsConfiguration.getConfig().getSystemWorkspace();   
   }
   
   static  public class SaveActionListener extends EventListener<UILanguageDialogForm> {

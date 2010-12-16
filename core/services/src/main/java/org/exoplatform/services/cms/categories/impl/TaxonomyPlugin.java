@@ -93,8 +93,8 @@ public class TaxonomyPlugin extends BaseComponentPlugin{
 
   @SuppressWarnings("unchecked")
   private void importPredefineTaxonomies(String repository) throws Exception {    
-    ManageableRepository manageableRepository = repositoryService_.getRepository(repository) ;
-    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig(repository);    
+    ManageableRepository manageableRepository = repositoryService_.getCurrentRepository();
+    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig();    
     Session session = manageableRepository.getSystemSession(dmsRepoConfig.getSystemWorkspace()) ;    
     Node taxonomyHomeNode = (Node)session.getItem(baseTaxonomiesPath_) ;
     //TODO Need remove this code

@@ -559,7 +559,7 @@ public class NewFolksonomyServiceImpl implements NewFolksonomyService, Startable
     ExoContainer myContainer = ExoContainerContext.getCurrentContainer();  	
 		RepositoryService repositoryService 
 		= (RepositoryService) myContainer.getComponentInstanceOfType(RepositoryService.class);
-		ManageableRepository	manageableRepository = repositoryService.getRepository(repository);
+		ManageableRepository	manageableRepository = repositoryService.getCurrentRepository();
   	
   	return (Node) sessionProvider.getSession(workspace, manageableRepository).getItem(path);
   }
@@ -569,7 +569,7 @@ public class NewFolksonomyServiceImpl implements NewFolksonomyService, Startable
     
 		RepositoryService repositoryService 
 		= (RepositoryService) myContainer.getComponentInstanceOfType(RepositoryService.class);
-		ManageableRepository	manageableRepository = repositoryService.getRepository(repository);
+		ManageableRepository	manageableRepository = repositoryService.getCurrentRepository();
   	
   	return (Node) sessionProvider.getSession(workspace, manageableRepository).getItem(path);
   }

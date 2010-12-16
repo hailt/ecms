@@ -158,8 +158,8 @@ public class TaxonomyPlugin extends BaseComponentPlugin {
 
   @SuppressWarnings("unchecked")
   private void importPredefineTaxonomies(String repository) throws Exception {
-    ManageableRepository manageableRepository = repositoryService_.getRepository(repository);
-    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig(repository);
+    ManageableRepository manageableRepository = repositoryService_.getCurrentRepository();
+    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig();
     if (workspace == null) {
       setWorkspace(dmsRepoConfig.getSystemWorkspace());
     } else {

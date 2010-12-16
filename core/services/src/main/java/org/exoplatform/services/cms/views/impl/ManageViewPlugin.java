@@ -103,7 +103,7 @@ public class ManageViewPlugin extends BaseComponentPlugin {
     String templatesPath = nodeHierarchyCreator_.getJcrPath(BasePath.CMS_VIEWTEMPLATES_PATH);    
     String warViewPath = predefinedViewsLocation_ + templatesPath.substring(templatesPath.lastIndexOf("exo:ecm") + 7) ;
     ManageableRepository manageableRepository = repositoryService_.getRepository(repository) ;    
-    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig(repository);
+    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig();
     Session session = manageableRepository.getSystemSession(dmsRepoConfig.getSystemWorkspace()) ;
     ViewConfig viewObject = null ;
     TemplateConfig templateObject = null ;

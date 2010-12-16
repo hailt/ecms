@@ -98,7 +98,7 @@ public class UIDriveInputSet extends UIFormInputSetWithAction {
   public void update(DriveData drive) throws Exception {
     String repository = getAncestorOfType(UIECMAdminPortlet.class).getPreferenceRepository();
     String[] wsNames = getApplicationComponent(RepositoryService.class)
-                      .getRepository(repository).getWorkspaceNames();
+                      .getCurrentRepository().getWorkspaceNames();
     TemplateService templateService = getApplicationComponent(TemplateService.class);
     Set<String> setFoldertypes = templateService.getAllowanceFolderType(repository);
     List<SelectItemOption<String>> workspace = new ArrayList<SelectItemOption<String>>();

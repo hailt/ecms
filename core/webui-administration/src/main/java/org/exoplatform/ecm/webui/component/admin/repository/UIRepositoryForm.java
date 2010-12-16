@@ -557,10 +557,9 @@ public class UIRepositoryForm extends UIForm implements UIPopupComponent {
       re.addWorkspace(uiForm.getWorkspace(uiForm.defaulWorkspace_));
       
       DMSRepositoryConfiguration newDConfiguration = new DMSRepositoryConfiguration();
-      newDConfiguration.setRepositoryName(repoName);
       newDConfiguration.setSystemWorkspace(uiForm.dmsSystemWorkspace_);
       DMSConfiguration dmsConfiguration = uiForm.getApplicationComponent(DMSConfiguration.class);
-      dmsConfiguration.initNewRepo(repoName, newDConfiguration);
+      dmsConfiguration.initNewRepo(newDConfiguration);
       
       uiForm.addNewElement(repoName, uiForm.dmsSystemWorkspace_);
       uiForm.saveRepo(re);

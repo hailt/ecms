@@ -132,7 +132,7 @@ public class UIDocumentForm extends UIDialogForm implements UIPopupComponent, UI
   public ResourceResolver getTemplateResourceResolver(WebuiRequestContext context, String template) {
     try {
       DMSConfiguration dmsConfiguration = getApplicationComponent(DMSConfiguration.class);
-      String wsName = dmsConfiguration.getConfig(getRepository()).getSystemWorkspace();
+      String wsName = dmsConfiguration.getConfig().getSystemWorkspace();
       return new JCRResourceResolver(getRepository(), wsName, Utils.EXO_TEMPLATEFILE);
     } catch (Exception e) {
       LOG.error("Unexpected error", e);
@@ -294,7 +294,7 @@ public class UIDocumentForm extends UIDialogForm implements UIPopupComponent, UI
       Node homeNode = uiForm.getNode().getParent() ;      
       try {
         CmsService cmsService = uiForm.getApplicationComponent(CmsService.class) ;
-        String addedPath = cmsService.storeNode(uiForm.documentType_, homeNode, inputProperties, false,repository);
+        String addedPath = cmsService.storeNode(uiForm.documentType_, homeNode, inputProperties, false);
         homeNode.getSession().save() ;
         homeNode.save() ;
         Node newNode = (Node)homeNode.getSession().getItem(addedPath);
@@ -391,7 +391,7 @@ public class UIDocumentForm extends UIDialogForm implements UIPopupComponent, UI
             if ((clickedField != null) && (clickedField.equals(FIELD_TAXONOMY))) {
               String repository = uiDocumentForm.getRepository();              
               DMSConfiguration dmsConfig = uiDocumentForm.getApplicationComponent(DMSConfiguration.class);
-              DMSRepositoryConfiguration dmsRepoConfig = dmsConfig.getConfig(repository);
+              DMSRepositoryConfiguration dmsRepoConfig = dmsConfig.getConfig();
               String workspaceName = dmsRepoConfig.getSystemWorkspace();            
               if(uiSet.getValue().size() == 0) uiSet.setValue(new ArrayList<Value>());            
               UIOneTaxonomySelector uiOneTaxonomySelector = 

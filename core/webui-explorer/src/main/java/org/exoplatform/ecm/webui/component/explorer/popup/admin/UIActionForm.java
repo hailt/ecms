@@ -275,7 +275,7 @@ public class UIActionForm extends UIDialogForm implements UISelectable {
           Node storedHomeNode = actionForm.getNode().getParent();
           Node currentActionNode = storedHomeNode.getNode(sortedInputs.get("/node").getValue().toString());
           if (uiExplorer.nodeIsLocked(currentActionNode)) return;
-          cmsService.storeNode(actionForm.nodeTypeName_, storedHomeNode, sortedInputs, false,repository);
+          cmsService.storeNode(actionForm.nodeTypeName_, storedHomeNode, sortedInputs, false);
           Session session = currentActionNode.getSession();
           if (uiExplorer.nodeIsLocked(currentActionNode)) return; // We add LockToken again because CMSService did logout session cause lost lock information
           session.move(currentActionNode.getPath(), storedHomeNode.getPath() + "/" + sortedInputs.get("/node/exo:name").getValue().toString());

@@ -396,7 +396,7 @@ public class UIJCRExplorer extends UIContainer {
     try{
       DMSConfiguration dmsConfiguration = getApplicationComponent(DMSConfiguration.class);
       DMSRepositoryConfiguration dmsRepoConfig = 
-        dmsConfiguration.getConfig(currentDriveRepositoryName_);
+        dmsConfiguration.getConfig();
       String workspace =  dmsRepoConfig.getSystemWorkspace();
       jcrTemplateResourceResolver_ = new JCRResourceResolver(currentDriveRepositoryName_, workspace, "exo:templateFile") ;
     } catch(Exception e) {
@@ -416,7 +416,7 @@ public class UIJCRExplorer extends UIContainer {
   /**
    * Sets the workspace of the current drive 
    */
-  public void setWorkspaceName(String workspaceName) { 
+  public void setWorkspaceName(String workspaceName) {
     currentDriveWorkspaceName_ = workspaceName ; 
     if (lastWorkspaceName_ == null) {
       setLastWorkspace(workspaceName);
@@ -446,7 +446,7 @@ public class UIJCRExplorer extends UIContainer {
 
   public ManageableRepository getRepository() throws Exception{         
     RepositoryService repositoryService  = getApplicationComponent(RepositoryService.class) ;      
-    return repositoryService.getRepository(currentDriveRepositoryName_);
+    return repositoryService.getCurrentRepository();
   }
 
   public Session getSessionByWorkspace(String wsName) throws Exception{    

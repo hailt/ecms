@@ -247,7 +247,7 @@ public class UIFCCForm extends UIDialogForm implements UISelectable {
    */
   private String getDMSWorkspace() {
     DMSConfiguration dmsConfiguration = getApplicationComponent(DMSConfiguration.class);
-    return dmsConfiguration.getConfig(repositoryName).getSystemWorkspace();   
+    return dmsConfiguration.getConfig().getSystemWorkspace();   
   }
   
   /**
@@ -349,7 +349,7 @@ public class UIFCCForm extends UIDialogForm implements UISelectable {
         return;
       }
       try {
-        String addedPath = cmsService.storeNode(preferenceType, homeNode, inputProperties, true, preferenceRepository);
+        String addedPath = cmsService.storeNode(preferenceType, homeNode, inputProperties, true);
         homeNode.getSession().save() ;
         int index = 0;
         if(homeNode.hasNode(addedPath.substring(addedPath.lastIndexOf("/") + 1))) {

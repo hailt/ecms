@@ -287,7 +287,7 @@ public class TemplatePlugin extends BaseComponentPlugin {
   @SuppressWarnings("unchecked")
   private void importPredefineTemplates(String repositoryName) throws Exception {
     ManageableRepository repository = repositoryService_.getRepository(repositoryName) ;
-    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig(repositoryName);
+    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig();
     String workspace = dmsRepoConfig.getSystemWorkspace();
     Session session = repository.getSystemSession(workspace) ;
     Node templatesHome = Utils.makePath(session.getRootNode(), cmsTemplatesBasePath_, NT_UNSTRUCTURED);

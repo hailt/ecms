@@ -165,7 +165,7 @@ public class UITemplateForm extends UIFormTabPane implements UISelectable {
     List<SelectItemOption<String>> options = new ArrayList<SelectItemOption<String>>() ;
     String repository = getRepository() ;       
     NodeTypeManager nodeTypeManager = 
-      getApplicationComponent(RepositoryService.class).getRepository(repository).getNodeTypeManager() ; 
+      getApplicationComponent(RepositoryService.class).getCurrentRepository().getNodeTypeManager() ; 
     Node templatesHome = getApplicationComponent(TemplateService.class).getTemplatesHome(repository,
         SessionProviderFactory.createSessionProvider()) ;
     if(templatesHome != null) {

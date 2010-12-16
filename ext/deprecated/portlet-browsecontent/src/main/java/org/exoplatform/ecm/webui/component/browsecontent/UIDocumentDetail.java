@@ -322,8 +322,7 @@ public class UIDocumentDetail extends UIContainer implements NodePresentation, U
   }
 
   public Node getNodeByUUID(String uuid) throws Exception{ 
-    String repository = getAncestorOfType(UIBrowseContentPortlet.class).getPreferenceRepository() ;
-    ManageableRepository manageRepo = getApplicationComponent(RepositoryService.class).getRepository(repository) ;
+    ManageableRepository manageRepo = getApplicationComponent(RepositoryService.class).getCurrentRepository() ;
     String[] workspaces = manageRepo.getWorkspaceNames() ;
     SessionProvider provider = SessionProviderFactory.createSessionProvider();
     for(String ws : workspaces) {
@@ -458,9 +457,8 @@ public class UIDocumentDetail extends UIContainer implements NodePresentation, U
       Node node = null ;
       UIBrowseContainer uiContainer = cbPortlet.findFirstComponentOfType(UIBrowseContainer.class) ;     
       if(wsName != null) {
-        String repository = uiDocument.getAncestorOfType(UIBrowseContentPortlet.class).getPreferenceRepository() ;        
         ManageableRepository manageableRepository = 
-          uiDocument.getApplicationComponent(RepositoryService.class).getRepository(repository) ;        
+          uiDocument.getApplicationComponent(RepositoryService.class).getCurrentRepository();        
         Session session = null ;
         if(path.indexOf("/jcr:system")>0) {
           session = SessionProviderFactory.createSystemProvider().getSession(wsName,manageableRepository) ;

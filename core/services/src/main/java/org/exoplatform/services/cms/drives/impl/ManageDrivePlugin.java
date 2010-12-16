@@ -142,7 +142,7 @@ public class ManageDrivePlugin extends BaseComponentPlugin {
    */
   private Session getSession(String repository)throws Exception {
     ManageableRepository manaRepository = repositoryService_.getRepository(repository) ;
-    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig(repository);
+    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig();
     return manaRepository.getSystemSession(dmsRepoConfig.getSystemWorkspace()) ;
   }
 }

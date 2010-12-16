@@ -122,7 +122,7 @@ public class UIVersionViewer extends UIBaseNodePresentation {
     try{
         String repository = getRepository();
         DMSConfiguration dmsConfiguration = getApplicationComponent(DMSConfiguration.class);
-        String workspace = dmsConfiguration.getConfig(repository).getSystemWorkspace();
+        String workspace = dmsConfiguration.getConfig().getSystemWorkspace();
         resourceResolver = new JCRResourceResolver(repository, workspace, "exo:templateFile");
     }catch (Exception e) {}    
     return resourceResolver ;   

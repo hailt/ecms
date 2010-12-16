@@ -202,7 +202,7 @@ public class ApplicationTemplateManagerServiceImpl implements ApplicationTemplat
    * @throws Exception the exception
    */
   private Node getBasedApplicationTemplatesHome(SessionProvider sessionProvider, String repository) throws Exception {
-    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig(repository);
+    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig();
     ManageableRepository manageableRepository = repositoryService.getRepository(repository);
     Session session = 
       sessionProvider.getSession(dmsRepoConfig.getSystemWorkspace(),manageableRepository);

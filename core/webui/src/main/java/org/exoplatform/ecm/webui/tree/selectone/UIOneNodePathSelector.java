@@ -97,7 +97,7 @@ public class UIOneNodePathSelector extends UIBaseNodeTreeSelector {
   
   public void init(SessionProvider sessionProvider) throws Exception {
     RepositoryService repositoryService = getApplicationComponent(RepositoryService.class);
-    ManageableRepository manageableRepository = repositoryService.getRepository(repositoryName);
+    ManageableRepository manageableRepository = repositoryService.getCurrentRepository();
     PublicationService publicationService = getApplicationComponent(PublicationService.class);
     TemplateService templateService  = getApplicationComponent(TemplateService.class);
     List<String> templates = templateService.getDocumentTemplates(repositoryName);

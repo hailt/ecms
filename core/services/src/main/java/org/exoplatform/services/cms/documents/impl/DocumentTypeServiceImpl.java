@@ -216,7 +216,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
   }
   
   private String buildQueryByContentsType(String repository, String userName) throws Exception {
-    List<String> contentsType = templateService_.getAllDocumentNodeTypes(repository);
+    List<String> contentsType = templateService_.getAllDocumentNodeTypes(null);
     StringBuilder constraint = new StringBuilder();
     if (userName == null) {
       for (String contentType : contentsType) {

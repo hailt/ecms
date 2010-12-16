@@ -262,7 +262,7 @@ public class MetadataServiceImpl implements MetadataService, Startable{
    */
   public List<NodeType> getAllMetadatasNodeType(String repository) throws Exception {
     List<NodeType> metadataTypes = new ArrayList<NodeType>();    
-    ExtendedNodeTypeManager ntManager = repositoryService_.getRepository(repository).getNodeTypeManager();     
+    ExtendedNodeTypeManager ntManager = repositoryService_.getCurrentRepository().getNodeTypeManager();     
     NodeTypeIterator ntIter = ntManager.getMixinNodeTypes();
     while(ntIter.hasNext()) {
       NodeType nt = ntIter.nextNodeType();
@@ -381,8 +381,8 @@ public class MetadataServiceImpl implements MetadataService, Startable{
    * @throws Exception
    */
   private Session getSession(String repository) throws Exception{ 
-    ManageableRepository manageableRepository = repositoryService_.getRepository(repository);
-    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig(repository);
+    ManageableRepository manageableRepository = repositoryService_.getCurrentRepository();
+    DMSRepositoryConfiguration dmsRepoConfig = dmsConfiguration_.getConfig();
     return manageableRepository.getSystemSession(dmsRepoConfig.getSystemWorkspace());
   }
 }
