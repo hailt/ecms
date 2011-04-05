@@ -69,11 +69,18 @@ public class CategoriesServiceImpl implements CategoriesService,Startable {
     dmsConfiguration_ = dmsConfiguration;
   }
 
+  @Deprecated
   public void init(String repository) throws Exception {
     for(TaxonomyPlugin plugin : plugins_) {
       plugin.init(repository) ;
     }
   }
+  
+  public void init() throws Exception {
+    for(TaxonomyPlugin plugin : plugins_) {
+      plugin.init() ;
+    }
+  }  
 
   public void addTaxonomyPlugin(ComponentPlugin plugin) {
     if(plugin instanceof TaxonomyPlugin) {

@@ -195,9 +195,9 @@ public class RESTImagesRendererService implements ResourceContainer{
    */
   public String generateImageURI(Node file, String propertyName) throws Exception {
     StringBuilder builder = new StringBuilder();
-    NodeLocation fielLocation = NodeLocation.make(file);
-    String repository = fielLocation.getRepository();
-    String workspaceName = fielLocation.getWorkspace();
+    NodeLocation fileLocation = NodeLocation.make(file);
+    String repository = fileLocation.getRepository();
+    String workspaceName = fileLocation.getWorkspace();
     String nodeIdentifiler = file.isNodeType("mix:referenceable") ? file.getUUID() : file.getPath().replaceFirst("/","");
     String portalName = PortalContainer.getCurrentPortalContainerName();
     String restContextName = PortalContainer.getCurrentRestContextName();

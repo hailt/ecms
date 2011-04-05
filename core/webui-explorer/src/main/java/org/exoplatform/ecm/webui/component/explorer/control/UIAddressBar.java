@@ -257,7 +257,7 @@ public class UIAddressBar extends UIForm {
       boolean isTaxonomyNode = false;
       if (currentNode.isNodeType(Utils.EXO_TAXANOMY)) {
         TaxonomyService taxonomyService = uiAddressBar.getApplicationComponent(TaxonomyService.class);
-        List<Node> TaxonomyTrees = taxonomyService.getAllTaxonomyTrees(uiExplorer.getRepositoryName());
+        List<Node> TaxonomyTrees = taxonomyService.getAllTaxonomyTrees();
         for (Node taxonomyNode : TaxonomyTrees) {
           if (currentNode.getPath().startsWith(taxonomyNode.getPath())) {
             ActionServiceContainer actionService = uiAddressBar.getApplicationComponent(ActionServiceContainer.class);

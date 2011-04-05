@@ -91,9 +91,8 @@ public class UIRelationsAddedList extends UIContainer implements UISelectable {
       String path = value.toString().substring(value.toString().indexOf(":") + 1) ;
       Node currentNode = uiJCRExplorer.getCurrentNode();
       uiJCRExplorer.addLockToken(currentNode);
-      relateService.addRelation(currentNode, path, wsName,repository) ;
-      updateGrid(relateService.getRelations(currentNode,
-          uiJCRExplorer.getRepositoryName(), SessionProviderFactory.createSessionProvider()), 1);
+      relateService.addRelation(currentNode, path, wsName) ;
+      updateGrid(relateService.getRelations(currentNode, SessionProviderFactory.createSessionProvider()), 1);
       setRenderSibling(UIRelationsAddedList.class) ;
     } catch(Exception e) {
       LOG.error("Unexpected error", e);
@@ -112,11 +111,11 @@ public class UIRelationsAddedList extends UIContainer implements UISelectable {
       Node currentNode = uiExplorer.getCurrentNode();
       uiExplorer.addLockToken(currentNode);
       try {
-        relationService.removeRelation(uiExplorer.getCurrentNode(), nodePath, uiExplorer.getRepositoryName());
+        relationService.removeRelation(uiExplorer.getCurrentNode(), nodePath);
         UIGrid uiGrid = uiAddedList.getChildById("RelateAddedList");
         uiAddedList.updateGrid(relationService.getRelations(uiExplorer.getCurrentNode(),
-            uiExplorer.getRepositoryName(), SessionProviderFactory.createSessionProvider()),
-            uiGrid.getUIPageIterator().getCurrentPage());
+                                                            SessionProviderFactory.createSessionProvider()),
+                               uiGrid.getUIPageIterator().getCurrentPage());
       } catch(Exception e) {
         JCRExceptionManager.process(uiApp, e) ;
       }

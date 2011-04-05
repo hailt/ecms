@@ -543,8 +543,16 @@ public class SessionLinkAware implements ExtendedSession, NamespaceAccessor {
     return ((NamespaceAccessor) getTargetSession()).getNamespaceURIByPrefix(prefix);
   }
 
-public Node getNodeByIdentifier(String identifier)
-    throws ItemNotFoundException, RepositoryException {
-  return null;
-}
+   public Node getNodeByIdentifier(String identifier)
+       throws ItemNotFoundException, RepositoryException {
+     return getTargetSession().getNodeByIdentifier(identifier);
+   }
+
+   @Override
+   public void exportSystemView(String absPath, OutputStream out, boolean skipBinary, boolean noRecurse,
+      boolean exportChildVersionHisotry) throws IOException, PathNotFoundException, RepositoryException
+   {
+      getTargetSession().exportSystemView(absPath, out, skipBinary, noRecurse, exportChildVersionHisotry);
+      
+   }
 }

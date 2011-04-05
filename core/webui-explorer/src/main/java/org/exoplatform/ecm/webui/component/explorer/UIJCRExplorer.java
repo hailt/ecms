@@ -396,7 +396,7 @@ public class UIJCRExplorer extends UIContainer {
       DMSRepositoryConfiguration dmsRepoConfig =
         dmsConfiguration.getConfig();
       String workspace =  dmsRepoConfig.getSystemWorkspace();
-      jcrTemplateResourceResolver_ = new JCRResourceResolver(currentDriveRepositoryName_, workspace, "exo:templateFile") ;
+      jcrTemplateResourceResolver_ = new JCRResourceResolver(workspace) ;
     } catch(Exception e) {
       LOG.error("Cannot instantiate the JCRResourceResolver", e);
     }
@@ -970,12 +970,12 @@ public class UIJCRExplorer extends UIContainer {
     SessionProvider sessionProvider = (ctx.getRemoteUser() == null) ?
                                       SessionProviderFactory.createAnonimProvider() :
                                       SessionProviderFactory.createSessionProvider();
-    for(Node node : newFolksonomyService.getAllDocumentsByTag(tagPath_, getRepositoryName(),
-                                                              getRepository().getConfiguration().getDefaultWorkspaceName(),
-                                                              sessionProvider)) {
-      if(documentsType.contains(node.getPrimaryNodeType().getName()) &&
-         PermissionUtil.canRead(node)) {
-        documentsOnTag.add(node) ;
+    for (Node node : newFolksonomyService.getAllDocumentsByTag(tagPath_,
+                                                               getRepository().getConfiguration().getDefaultWorkspaceName(),
+                                                               sessionProvider)) {
+      if (documentsType.contains(node.getPrimaryNodeType().getName())
+          && PermissionUtil.canRead(node)) {
+        documentsOnTag.add(node);
       }
     }
     return documentsOnTag ;

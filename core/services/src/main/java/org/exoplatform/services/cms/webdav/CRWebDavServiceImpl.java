@@ -16,23 +16,6 @@
  */
 package org.exoplatform.services.cms.webdav;
 
-import java.io.InputStream;
-
-import javax.jcr.Item;
-import javax.jcr.NoSuchWorkspaceException;
-import javax.jcr.PathNotFoundException;
-import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.common.util.HierarchicalProperty;
 import org.exoplatform.container.xml.InitParams;
@@ -59,34 +42,51 @@ import org.exoplatform.services.rest.ext.webdav.method.UNCHECKOUT;
 import org.exoplatform.services.rest.ext.webdav.method.UNLOCK;
 import org.exoplatform.services.rest.ext.webdav.method.VERSIONCONTROL;
 
+import java.io.InputStream;
+
+import javax.jcr.Item;
+import javax.jcr.NoSuchWorkspaceException;
+import javax.jcr.PathNotFoundException;
+import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 /**
  * This class is used to override the default WebDavServiceImpl in order to support symlinks
- *
+ * 
  * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          nicolas.filotto@exoplatform.com
- * 9 avr. 2009
+ * Author : peter.nedonosko@exoplatform.com
+ * 29 April 2011  
  */
-@Path("/jcr/")
-public class WebDavServiceImpl extends org.exoplatform.services.jcr.webdav.WebDavServiceImpl {
+@Path("/dav/")
+public class CRWebDavServiceImpl extends org.exoplatform.services.jcr.webdav.CRWebDavServiceImpl {
 
   /**
    * Logger.
    */
-  private static Log log = ExoLogger.getLogger("cms.webdav.WebDavServiceImpl");
-
+  private static Log log = ExoLogger.getLogger("cms.webdav.CRWebDavServiceImpl");
+  
   private final NodeFinder nodeFinder;
-
-  public WebDavServiceImpl(InitParams params,
+  
+  public CRWebDavServiceImpl(InitParams params,
                            RepositoryService repositoryService,
                            ThreadLocalSessionProviderService sessionProviderService,
                            NodeFinder nodeFinder) throws Exception {
     super(params, repositoryService, sessionProviderService);
+    
     this.nodeFinder = nodeFinder;
   }
 
-  private String getRealDestinationHeader(String baseURI, String repoName, String destinationHeader) {
-    String serverURI = baseURI + "/jcr/" + repoName;
+  private String getRealDestinationHeader(String baseURI, String destinationHeader) {
+    String serverURI = baseURI + "/dav";
 
     destinationHeader = TextUtil.unescape(destinationHeader, '%');
 
@@ -95,68 +95,59 @@ public class WebDavServiceImpl extends org.exoplatform.services.jcr.webdav.WebDa
     }
 
     String destPath = destinationHeader.substring(serverURI.length() + 1);
-
+    
     try {
-      Item item = nodeFinder.getItem(workspaceName(destPath),
-                                     LinkUtils.getParentPath(path(destPath)),
-                                     true);
-      return item.getSession().getWorkspace().getName()
-          + LinkUtils.createPath(item.getPath(), LinkUtils.getItemName(path(destPath)));
+      Item item = nodeFinder.getItem(null, workspaceName(destPath), LinkUtils.getParentPath(path(destPath)), true);
+      return item.getSession().getWorkspace().getName() + LinkUtils.createPath(item.getPath(), LinkUtils.getItemName(path(destPath)));
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + destPath, e);
+      log.warn("Cannot find the item at /" + destPath, e);
       return null;
     }
   }
 
+  
   @CHECKIN
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response checkin(@PathParam("repoName") String repoName,
-                          @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response checkin(@PathParam("repoPath") String repoPath,
                           @HeaderParam(ExtHttpHeaders.LOCKTOKEN) String lockTokenHeader,
                           @HeaderParam(ExtHttpHeaders.IF) String ifHeader) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath),
-                                     path(Text.escapeIllegalJcrChars(repoPath)),
-                                     true);
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item at /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.checkin(repoName, repoPath, lockTokenHeader, ifHeader);
+    return super.checkin(repoPath, lockTokenHeader, ifHeader);
   }
 
   @CHECKOUT
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response checkout(@PathParam("repoName") String repoName,
-                           @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response checkout(@PathParam("repoPath") String repoPath,
                            @HeaderParam(ExtHttpHeaders.LOCKTOKEN) String lockTokenHeader,
                            @HeaderParam(ExtHttpHeaders.IF) String ifHeader) {
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath),
-                                     path(Text.escapeIllegalJcrChars(repoPath)),
-                                     true);
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item at /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.checkout(repoName, repoPath, lockTokenHeader, ifHeader);
+    return super.checkout(repoPath, lockTokenHeader, ifHeader);
   }
 
   @COPY
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response copy(@PathParam("repoName") String repoName,
-                       @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response copy(@PathParam("repoPath") String repoPath,
                        @HeaderParam(ExtHttpHeaders.DESTINATION) String destinationHeader,
                        @HeaderParam(ExtHttpHeaders.LOCKTOKEN) String lockTokenHeader,
                        @HeaderParam(ExtHttpHeaders.IF) String ifHeader,
@@ -166,319 +157,281 @@ public class WebDavServiceImpl extends org.exoplatform.services.jcr.webdav.WebDa
                        HierarchicalProperty body) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)));
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)));
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item at /" + repoPath, e);
       return Response.serverError().build();
     }
-    String realDestinationHeader = getRealDestinationHeader(uriInfo.getPath(), repoName, destinationHeader);
+    String realDestinationHeader = getRealDestinationHeader(uriInfo.getPath(), destinationHeader);
     if (realDestinationHeader != null) {
       destinationHeader = realDestinationHeader;
     }
-    return super.copy(repoName,
-                      repoPath,
-                      destinationHeader,
-                      lockTokenHeader,
-                      ifHeader,
-                      depthHeader,
-                      overwriteHeader,
-                      uriInfo,
-                      body);
+    return super.copy(repoPath, destinationHeader, lockTokenHeader, ifHeader, depthHeader, overwriteHeader, uriInfo, body);
   }
 
   @GET
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response get(@PathParam("repoName") String repoName,
-                      @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response get(@PathParam("repoPath") String repoPath,
                       @HeaderParam(ExtHttpHeaders.RANGE) String rangeHeader,
                       @HeaderParam(ExtHttpHeaders.IF_MODIFIED_SINCE) String ifModifiedSince,
                       @QueryParam("version") String version,
                       @Context UriInfo uriInfo) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item at /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.get(repoName, repoPath, rangeHeader, ifModifiedSince, version, uriInfo);
+    return super.get(repoPath, rangeHeader, ifModifiedSince, version, uriInfo);
   }
 
   @HEAD
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response head(@PathParam("repoName") String repoName,
-                       @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response head(@PathParam("repoPath") String repoPath,
                        @Context UriInfo uriInfo) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.head(repoName, repoPath, uriInfo);
+    return super.head(repoPath, uriInfo);
   }
 
   @LOCK
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response lock(@PathParam("repoName") String repoName,
-                       @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response lock(@PathParam("repoPath") String repoPath,
                        @HeaderParam(ExtHttpHeaders.LOCKTOKEN) String lockTokenHeader,
                        @HeaderParam(ExtHttpHeaders.IF) String ifHeader,
                        @HeaderParam(ExtHttpHeaders.DEPTH) String depthHeader,
                        HierarchicalProperty body) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.lock(repoName, repoPath, lockTokenHeader, ifHeader, depthHeader, body);
+    return super.lock(repoPath, lockTokenHeader, ifHeader, depthHeader, body);
   }
 
   @UNLOCK
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response unlock(@PathParam("repoName") String repoName,
-                         @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response unlock(@PathParam("repoPath") String repoPath,
                          @HeaderParam(ExtHttpHeaders.LOCKTOKEN) String lockTokenHeader,
                          @HeaderParam(ExtHttpHeaders.IF) String ifHeader) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.unlock(repoName, repoPath, lockTokenHeader, ifHeader);
+    return super.unlock(repoPath, lockTokenHeader, ifHeader);
   }
 
   @OPTIONS
-  @Path("/{repoName}/{path:.*}/")
+  @Path("/{path:.*}/")
   public Response options(@PathParam("path") String path) {
     return super.options(path);
   }
 
   @ORDERPATCH
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response order(@PathParam("repoName") String repoName,
-                        @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response order(@PathParam("repoPath") String repoPath,
                         @HeaderParam(ExtHttpHeaders.LOCKTOKEN) String lockTokenHeader,
                         @HeaderParam(ExtHttpHeaders.IF) String ifHeader,
                         @Context UriInfo uriInfo,
                         HierarchicalProperty body) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.order(repoName, repoPath, lockTokenHeader, ifHeader, uriInfo, body);
+    return super.order(repoPath, lockTokenHeader, ifHeader, uriInfo, body);
   }
 
   @PROPFIND
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response propfind(@PathParam("repoName") String repoName,
-                           @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response propfind(@PathParam("repoPath") String repoPath,
                            @HeaderParam(ExtHttpHeaders.DEPTH) String depthHeader,
                            @Context UriInfo uriInfo,
                            HierarchicalProperty body) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.propfind(repoName, repoPath, depthHeader, uriInfo, body);
+    return super.propfind(repoPath, depthHeader, uriInfo, body);
   }
 
   @PROPPATCH
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response proppatch(@PathParam("repoName") String repoName,
-                            @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response proppatch(@PathParam("repoPath") String repoPath,
                             @HeaderParam(ExtHttpHeaders.LOCKTOKEN) String lockTokenHeader,
                             @HeaderParam(ExtHttpHeaders.IF) String ifHeader,
                             @Context UriInfo uriInfo,
                             HierarchicalProperty body) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.proppatch(repoName, repoPath, lockTokenHeader, ifHeader, uriInfo, body);
+    return super.proppatch(repoPath, lockTokenHeader, ifHeader, uriInfo, body);
   }
 
   @PUT
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response put(@PathParam("repoName") String repoName,
-                      @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response put(@PathParam("repoPath") String repoPath,
                       @HeaderParam(ExtHttpHeaders.LOCKTOKEN) String lockTokenHeader,
                       @HeaderParam(ExtHttpHeaders.IF) String ifHeader,
                       @HeaderParam(ExtHttpHeaders.FILE_NODETYPE) String fileNodeTypeHeader,
                       @HeaderParam(ExtHttpHeaders.CONTENT_NODETYPE) String nodeTypeHeader,
                       @HeaderParam(ExtHttpHeaders.CONTENT_MIXINTYPES) String mixinTypes,
                       @HeaderParam(ExtHttpHeaders.CONTENTTYPE) MediaType mediaType,
-                      InputStream inputStream) {
+                      InputStream inputStream,
+                      @Context UriInfo uriInfo) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath),
-                                     LinkUtils.getParentPath(path(Text.escapeIllegalJcrChars(repoPath))),
-                                     true);
-      repoPath = item.getSession().getWorkspace().getName()
-          + LinkUtils.createPath(item.getPath(), LinkUtils.getItemName(path(repoPath)));
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), LinkUtils.getParentPath(path(Text.escapeIllegalJcrChars(repoPath))), true);
+      repoPath = item.getSession().getWorkspace().getName() + LinkUtils.createPath(item.getPath(), LinkUtils.getItemName(path(repoPath)));
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.put(repoName,
-                     repoPath,
-                     lockTokenHeader,
-                     ifHeader,
-                     null,
-                     nodeTypeHeader,
-                     mixinTypes,
-                     mediaType,
-                     inputStream);
+    return super.put(repoPath, lockTokenHeader, ifHeader, null, nodeTypeHeader, mixinTypes, mediaType, inputStream, uriInfo);
   }
 
   @REPORT
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response report(@PathParam("repoName") String repoName,
-                         @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response report(@PathParam("repoPath") String repoPath,
                          @HeaderParam(ExtHttpHeaders.DEPTH) String depthHeader,
                          @Context UriInfo uriInfo,
                          HierarchicalProperty body) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath),
-                                     path(Text.escapeIllegalJcrChars(repoPath)),
-                                     true);
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.report(repoName, repoPath, depthHeader, uriInfo, body);
+    return super.report(repoPath, depthHeader, uriInfo, body);
   }
 
   @SEARCH
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response search(@PathParam("repoName") String repoName,
-                         @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response search(@PathParam("repoPath") String repoPath,
                          @Context UriInfo uriInfo,
                          HierarchicalProperty body) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath),
-                                     path(Text.escapeIllegalJcrChars(repoPath)),
-                                     true);
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item at /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.search(repoName, repoPath, uriInfo, body);
+    return super.search(repoPath, uriInfo, body);
   }
 
   @UNCHECKOUT
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response uncheckout(@PathParam("repoName") String repoName,
-                             @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response uncheckout(@PathParam("repoPath") String repoPath,
                              @HeaderParam(ExtHttpHeaders.LOCKTOKEN) String lockTokenHeader,
                              @HeaderParam(ExtHttpHeaders.IF) String ifHeader) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath),
-                                     path(Text.escapeIllegalJcrChars(repoPath)),
-                                     true);
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item at /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.uncheckout(repoName, repoPath, lockTokenHeader, ifHeader);
+    return super.uncheckout(repoPath, lockTokenHeader, ifHeader);
   }
 
   @VERSIONCONTROL
-  @Path("/{repoName}/{repoPath:.*}/")
-  public Response versionControl(@PathParam("repoName") String repoName,
-                                 @PathParam("repoPath") String repoPath,
+  @Path("/{repoPath:.*}/")
+  public Response versionControl(@PathParam("repoPath") String repoPath,
                                  @HeaderParam(ExtHttpHeaders.LOCKTOKEN) String lockTokenHeader,
                                  @HeaderParam(ExtHttpHeaders.IF) String ifHeader) {
 
     try {
-      Item item = nodeFinder.getItem(workspaceName(repoPath),
-                                     path(Text.escapeIllegalJcrChars(repoPath)),
-                                     true);
+      Item item = nodeFinder.getItem(null, workspaceName(repoPath), path(Text.escapeIllegalJcrChars(repoPath)), true);
       repoPath = item.getSession().getWorkspace().getName() + item.getPath();
     } catch (PathNotFoundException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (NoSuchWorkspaceException exc) {
       return Response.status(HTTPStatus.NOT_FOUND).entity(exc.getMessage()).build();
     } catch (Exception e) {
-      log.warn("Cannot find the item at " + repoName + "/" + repoPath, e);
+      log.warn("Cannot find the item at /" + repoPath, e);
       return Response.serverError().build();
     }
-    return super.versionControl(repoName, repoPath, lockTokenHeader, ifHeader);
+    return super.versionControl(repoPath, lockTokenHeader, ifHeader);
   }
 }

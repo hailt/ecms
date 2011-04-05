@@ -301,14 +301,14 @@ public class UIRepositoryForm extends UIForm implements UIPopupComponent {
         LOG.error("Unexpected error", e);
         return;
       }
-      initServices(repositoryEntry.getName());
+      initServices();
       if(rService.getConfig().isRetainable()) {
         rService.getConfig().retain();
       }
     }
   }
 
-  private void initServices(String repository) throws Exception{
+  private void initServices() throws Exception{
     try {
       RepositoryService rService = getApplicationComponent(RepositoryService.class);
       InputStream xml = configurationManager.getURL("classpath:/conf/portal/registry-nodetypes.xml").openStream();
@@ -317,17 +317,19 @@ public class UIRepositoryForm extends UIForm implements UIPopupComponent {
               .registerNodeTypes(xml, ExtendedNodeTypeManager.IGNORE_IF_EXISTS);
       xml.close();
       getApplicationComponent(RegistryService.class).initStorage(false);
-      getApplicationComponent(NodeHierarchyCreator.class).init(repository);
-      getApplicationComponent(TaxonomyService.class).init(repository);
+      getApplicationComponent(NodeHierarchyCreator.class).init(rService.getCurrentRepository()
+                                                                       .getConfiguration()
+                                                                       .getName());
+      getApplicationComponent(TaxonomyService.class).init();
       getApplicationComponent(ManageDriveService.class).init();
-      getApplicationComponent(NewFolksonomyService.class).init(repository);
-      getApplicationComponent(MetadataService.class).init(repository);
-      getApplicationComponent(QueryService.class).init(repository);
-      getApplicationComponent(RelationsService.class).init(repository);
-      getApplicationComponent(ScriptService.class).initRepo(repository);
+      getApplicationComponent(NewFolksonomyService.class).init();
+      getApplicationComponent(MetadataService.class).init();
+      getApplicationComponent(QueryService.class).init();
+      getApplicationComponent(RelationsService.class).init();
+      getApplicationComponent(ScriptService.class).initRepo();
       getApplicationComponent(TemplateService.class).init();
-      getApplicationComponent(ManageViewService.class).init(repository);
-      getApplicationComponent(ActionServiceContainer.class).init(repository);
+      getApplicationComponent(ManageViewService.class).init();
+      getApplicationComponent(ActionServiceContainer.class).init();
     } catch(NullPointerException nullPointerException) {
       return;
     } catch(ItemExistsException itemExistsException) {

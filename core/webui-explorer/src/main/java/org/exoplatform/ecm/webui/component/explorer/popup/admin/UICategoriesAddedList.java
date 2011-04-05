@@ -17,7 +17,6 @@
 package org.exoplatform.ecm.webui.component.explorer.popup.admin;
 
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -96,10 +95,8 @@ public class UICategoriesAddedList extends UIContainer implements UISelectable {
   }
 
   List<Node> getAllTaxonomyTrees() throws RepositoryException {
-    UIJCRExplorer uiJCRExplorer = getAncestorOfType(UIJCRExplorer.class);
-    String repository = uiJCRExplorer.getRepositoryName();
     TaxonomyService taxonomyService = getApplicationComponent(TaxonomyService.class);
-    return taxonomyService.getAllTaxonomyTrees(repository);
+    return taxonomyService.getAllTaxonomyTrees();
   }
 
   String displayCategory(Node node, List<Node> taxonomyTrees) {

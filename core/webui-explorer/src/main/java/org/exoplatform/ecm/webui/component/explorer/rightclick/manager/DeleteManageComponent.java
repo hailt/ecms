@@ -238,7 +238,7 @@ public class DeleteManageComponent extends UIAbstractManagerComponent {
       PropertyIterator iter = node.getReferences();
       while (iter.hasNext()) {
         Node refNode = iter.nextProperty().getParent();
-        relationService.removeRelation(refNode, node.getPath(), uiExplorer.getRepositoryName());
+        relationService.removeRelation(refNode, node.getPath());
       }
 
     if (!node.isCheckedOut())
@@ -316,7 +316,7 @@ public class DeleteManageComponent extends UIAbstractManagerComponent {
 
       // If node has taxonomy
       TaxonomyService taxonomyService = uiExplorer.getApplicationComponent(TaxonomyService.class);
-      List<Node> listTaxonomyTrees = taxonomyService.getAllTaxonomyTrees(uiExplorer.getRepositoryName());
+      List<Node> listTaxonomyTrees = taxonomyService.getAllTaxonomyTrees();
       List<Node> listExistedTaxonomy = taxonomyService.getAllCategories(node);
       for (Node existedTaxonomy : listExistedTaxonomy) {
         for (Node taxonomyTrees : listTaxonomyTrees) {
@@ -336,9 +336,10 @@ public class DeleteManageComponent extends UIAbstractManagerComponent {
       thumbnailService.processRemoveThumbnail(node);
       NewFolksonomyService newFolksonomyService = getApplicationComponent(NewFolksonomyService.class);
 
-      newFolksonomyService.removeTagsOfNodeRecursively(node,uiExplorer.getRepositoryName(),
-                                                       uiExplorer.getRepository().getConfiguration().
-                                                       getDefaultWorkspaceName(),
+      newFolksonomyService.removeTagsOfNodeRecursively(node,
+                                                       uiExplorer.getRepository()
+                                                                 .getConfiguration()
+                                                                 .getDefaultWorkspaceName(),
                                                        node.getSession().getUserID(),
                                                        getGroups());
       //trashService.removeRelations(node, uiExplorer.getSystemProvider(), uiExplorer.getRepositoryName());

@@ -127,7 +127,7 @@ public class EmptyTrashManageComponent extends UIAbstractManagerComponent {
     node = uiExplorer.getNodeByPath(nodePath, session, false);
     // If node has taxonomy
     TaxonomyService taxonomyService = uiExplorer.getApplicationComponent(TaxonomyService.class);
-    List<Node> listTaxonomyTrees = taxonomyService.getAllTaxonomyTrees(uiExplorer.getRepositoryName());
+    List<Node> listTaxonomyTrees = taxonomyService.getAllTaxonomyTrees();
     List<Node> listExistedTaxonomy = taxonomyService.getAllCategories(node);
     for (Node existedTaxonomy : listExistedTaxonomy) {
       for (Node taxonomyTrees : listTaxonomyTrees) {

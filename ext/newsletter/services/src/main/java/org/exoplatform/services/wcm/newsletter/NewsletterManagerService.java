@@ -95,6 +95,7 @@ public class NewsletterManagerService {
                                   RepositoryService repositoryService,
                                   MailService mailService) {
     log.info("Starting NewsletterManagerService ... ");
+    // TODO ECMS-2132 How to get repository's name here ????????
     repositoryName = initParams.getValueParam("repository").getValue();
     workspaceName = initParams.getValueParam("workspace").getValue();
     categoryHandler = new NewsletterCategoryHandler(repositoryName, workspaceName);

@@ -34,7 +34,7 @@
       <version>${org.exoplatform.jcr.version}</version>
       <scope>compile</scope>
     </dependency>
-		<dependency>
+    <dependency>
       <groupId>org.exoplatform.ecms</groupId>
       <artifactId>exo-ecms-core-parser</artifactId>
       <version>${project.version}</version>
@@ -50,6 +50,7 @@
       <groupId>org.exoplatform</groupId>
       <artifactId>exo-jcr-services</artifactId>
       <version>${org.exoplatform.jcr-services.version}</version>
+      <!--version>1.14.0-CR2-SNAPSHOT</version-->
       <scope>compile</scope>
     </dependency>
     <dependency>

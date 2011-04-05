@@ -117,8 +117,24 @@ public interface WCMComposer {
    *
    * @throws Exception the exception
    */
+  @Deprecated
   public List<Node> getContents(String repository,
                                 String workspace,
+                                String path,
+                                HashMap<String, String> filters,
+                                SessionProvider sessionProvider) throws Exception;
+  
+  /**
+   * returns contents at the specified path based on filters.
+   * 
+   * @param workspace the workspace
+   * @param path the path
+   * @param filters the filters
+   * @param sessionProvider the session provider
+   * @return a jcr node
+   * @throws Exception the exception
+   */
+  public List<Node> getContents(String workspace,
                                 String path,
                                 HashMap<String, String> filters,
                                 SessionProvider sessionProvider) throws Exception;
