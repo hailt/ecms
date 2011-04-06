@@ -16,13 +16,13 @@
  */
 package org.exoplatform.services.cms.templates;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ObjectParameter;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by The eXo Platform SAS
@@ -38,7 +38,14 @@ public class ContentTypeFilterPlugin extends BaseComponentPlugin {
   private String repository;
   
   public ContentTypeFilterPlugin(InitParams initParams) {
-    repository = initParams.getValueParam("repository").getValue();
+     if (initParams.getValueParam("repository") != null)
+     {
+        repository = initParams.getValueParam("repository").getValue();
+     }
+     else
+     {
+        repository = null;
+     }
     for(Iterator<ObjectParameter> iterator = initParams.getObjectParamIterator();iterator.hasNext();) {
       Object object = iterator.next().getObject();
       if(object instanceof FolderFilterConfig ) {
