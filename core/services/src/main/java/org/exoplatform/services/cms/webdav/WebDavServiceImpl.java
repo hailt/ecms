@@ -16,23 +16,6 @@
  */
 package org.exoplatform.services.cms.webdav;
 
-import java.io.InputStream;
-
-import javax.jcr.Item;
-import javax.jcr.NoSuchWorkspaceException;
-import javax.jcr.PathNotFoundException;
-import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.common.util.HierarchicalProperty;
 import org.exoplatform.container.xml.InitParams;
@@ -58,6 +41,23 @@ import org.exoplatform.services.rest.ext.webdav.method.SEARCH;
 import org.exoplatform.services.rest.ext.webdav.method.UNCHECKOUT;
 import org.exoplatform.services.rest.ext.webdav.method.UNLOCK;
 import org.exoplatform.services.rest.ext.webdav.method.VERSIONCONTROL;
+
+import java.io.InputStream;
+
+import javax.jcr.Item;
+import javax.jcr.NoSuchWorkspaceException;
+import javax.jcr.PathNotFoundException;
+import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 /**
  * This class is used to override the default WebDavServiceImpl in order to support symlinks
@@ -362,7 +362,8 @@ public class WebDavServiceImpl extends org.exoplatform.services.jcr.webdav.WebDa
                       @HeaderParam(ExtHttpHeaders.CONTENT_NODETYPE) String nodeTypeHeader,
                       @HeaderParam(ExtHttpHeaders.CONTENT_MIXINTYPES) String mixinTypes,
                       @HeaderParam(ExtHttpHeaders.CONTENTTYPE) MediaType mediaType,
-                      InputStream inputStream) {
+                      InputStream inputStream,
+                      @Context UriInfo uriInfo) {
 
     try {
       Item item = nodeFinder.getItem(workspaceName(repoPath),
@@ -386,7 +387,8 @@ public class WebDavServiceImpl extends org.exoplatform.services.jcr.webdav.WebDa
                      nodeTypeHeader,
                      mixinTypes,
                      mediaType,
-                     inputStream);
+                     inputStream,
+                     uriInfo);
   }
 
   @REPORT
